@@ -1,9 +1,10 @@
-package javaChess;
+package projet_echecs;
 
-public class Cavalier extends Piece{
+public class Cavalier extends Piece {
 	
-	public Cavalier(char couleur, Case position) {
-		this.couleur = couleur;
-		this.position = position;
+	private int[][] Co = {{-2,1},{-1,2},{1,2},{2,1},{2,-1},{1,-2},{-1,-2},{-2,-1}};
+
+	public Cavalier(Case pos, char couleur) {
+		super(pos, couleur, "C" + couleur);
 	}
 }

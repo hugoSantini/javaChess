@@ -1,34 +1,64 @@
-package javaChess;
+package projet_echecs;
 
 public class Case {
-	private char ligne;
-	private int colonne;
 	
-	public Case(char ligne,int colonne) {
-		this.ligne = ligne;
-		this.colonne = colonne;
+	private char Ligne;
+	private int Colonne;
+	private Piece piece;
+	
+	public Case()
+	{	
+	}
+	
+	public Case(char L, int C)
+	{
+		this.Ligne = L;
+		this.Colonne = C;
 	}
 
 	public char getLigne() {
-		return ligne;
+		return Ligne;
 	}
 
 	public void setLigne(char ligne) {
-		this.ligne = ligne;
+		this.Ligne = ligne;
 	}
 
 	public int getColonne() {
-		return colonne;
+		return Colonne;
 	}
 
 	public void setColonne(int colonne) {
-		this.colonne = colonne;
+		this.Colonne = colonne;
 	}
 	
+
+	public Boolean getPresence() {
+		return this.piece != null;
+	}
+
+	public Piece getPiece() {
+		return this.piece;
+	}
+
+	public void setPiece(Piece piece) {
+		this.piece = piece;
+	}
 	
-	public static void main(String[] args) {
-		
-		Case a1 = new Case('a',1);
-		
+	public void viderCase()
+	{
+		this.piece = null;
+	}
+	
+	public String toString()
+	{
+		if(this.getPresence())
+		{
+			return this.piece.toString();
+		}
+		else
+		{
+		return "00";
+		}
 	}
 }

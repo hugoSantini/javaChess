@@ -1,9 +1,10 @@
-package javaChess;
+package projet_echecs;
 
-public class Tour extends Piece{
+public class Tour extends Piece {
 	
-	public Tour(char couleur, Case position) {
-		this.couleur = couleur;
-		this.position = position;
+	private int[][] Co = {{1,1},{-1,1},{0,2},{0,1}};
+
+	public Tour(Case pos, char couleur) {
+		super(pos, couleur, "T" + couleur);
 	}
 }
