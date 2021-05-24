@@ -2,39 +2,56 @@ package projet_echecs;
 
 public class Piece {
 	
-	private Case position;
+	private Case c;
 	private char couleur;
 	private String Nom;
 	protected int[][] Co;
 	
 	
-	public Piece (Case pos, char couleur, String Nom){
-		this.position = pos;
+	public Piece (char couleur, String Nom)
+	{
 		this.couleur = couleur;
 		this.Nom = Nom;
 	}
 	
-	public int[] getCo(int i) {
+	public int[] getCo(int i)
+	{
 		return this.Co[i];
 	}
 
-	public Case getPosition() {
-		return this.position;
+	public Case getCase() 
+	{
+		return this.c;
 	}
 
-	public void setPosition(Case position) {
-		this.position = position;
+	public void setCase(Case c) 
+	{
+		this.c = c;
 	}
 
-	public char getCouleur() {
+	public char getCouleur()
+	{
 		return this.couleur;
 	}
 
-	public void setCouleur(char couleur) {
+	public void setCouleur(char couleur) 
+	{
 		this.couleur = couleur;
 	}
 	
-	public String toString() {
-		return this.Nom;
+	public boolean deplacementOk(Case caseA)
+	{
+		return false;
+	}
+	
+	public boolean deplacer(Case caseA)
+	{
+		return true;
+	}
+	
+	
+	public String toString() 
+	{
+		return this.Nom + this.couleur;
 	}
 }

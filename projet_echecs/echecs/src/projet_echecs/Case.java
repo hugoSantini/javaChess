@@ -3,21 +3,30 @@ package projet_echecs;
 public class Case {
 	
 	private int Ligne;
-	private char Colonne;
-	private Piece piece;
+	private int Colonne;
+	private static Case[][] Cases = new Case[8][8];
 	
-	public Case()
-	{	
-	}
-	
-	public Case(int L, char C)
+	public Case(int L, int C)
 	{
 		this.Ligne = L;
 		this.Colonne = C;
+		
+		Cases[L][C] = new Case(this);
+	}
+	
+	public Case(Case c)
+	{
+		this.Ligne = c.getLigne();
+		this.Colonne = c.getColonne();
+	}
+	
+	public static Case getCase(int L, int C)
+	{
+		return Cases[L][C];
 	}
 
 	public int getLigne() {
-		return Ligne;
+		return this.Ligne;
 	}
 
 	public void setLigne(int ligne) {
@@ -25,40 +34,32 @@ public class Case {
 	}
 
 	public int getColonne() {
-		return Colonne;
+		return this.Colonne;
+	}
+	
+	public char getNomColonne()
+	{
+		switch(this.Colonne)
+		{
+			case 1 : return 'A' ;
+			case 2 : return 'B' ;
+			case 3 : return 'C' ;
+			case 4 : return 'D' ;
+			case 5 : return 'E' ;
+			case 6 : return 'F' ;
+			case 7 : return 'G' ;
+			case 8 : return 'H' ;
+			default : return 'O' ;
+		}
 	}
 
-	public void setColonne(char colonne) {
+	public void setColonne(int colonne) {
 		this.Colonne = colonne;
 	}
 	
-
-	public Boolean getPresence() {
-		return this.piece != null;
-	}
-
-	public Piece getPiece() {
-		return this.piece;
-	}
-
-	public void setPiece(Piece piece) {
-		this.piece = piece;
-	}
-	
-	public void viderCase()
-	{
-		this.piece = null;
-	}
 	
 	public String toString()
 	{
-		if(this.getPresence())
-		{
-			return this.piece.toString();
-		}
-		else
-		{
 		return "00";
-		}
 	}
 }
