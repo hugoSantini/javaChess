@@ -15,15 +15,12 @@ public class Tour extends Piece {
 		}
 	}
 	
+	
 	public boolean deplacementOk(Case c)
 	{
-		for(int i = 0;i <=8;i++){
-    		if(i == c.getLigne() && c.getColonne() == this.getCase().getColonne()){
-    			return true;
-    		}
-    		if(i == c.getColonne() && c.getLigne() == this.getCase().getLigne()){
-    			return true;
-    		}
+    	if(c.getLigne() == this.getCase().getLigne() || c.getColonne() == this.getCase().getColonne())
+    	{
+    		return true;
     	}
     	return false;
     }
