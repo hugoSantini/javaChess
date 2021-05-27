@@ -1,15 +1,21 @@
 package projet_echecs;
 
-public class Roi extends Piece{
-	
-	private int[][] CoRoi = {{1,1},{-1,1},{1,-1},{-1,-1},{1,0},{0,1},{-1,0},{0,-1}};
+public class Roi extends Piece
+{
 
-	public Roi(char couleur) {
+	public Roi(char couleur)
+	{
 		super(couleur, "R");
-		this.Co = new int[this.CoRoi.length][2];
-		for(int i = 0; i < this.CoRoi.length; i++)
-		{
-			this.Co[i] = this.CoRoi[i];
-		}
 	}
+	
+	public boolean deplacementOk(Case c)
+	{
+    	if(     (c.getLigne() == this.getCase().getLigne() || c.getLigne() == this.getCase().getLigne() - 1 || c.getLigne() == this.getCase().getLigne() + 1)
+    			&&
+    			(-1 <= c.getColonne() - this.getCase().getColonne() && c.getColonne() - this.getCase().getColonne() <= 1))
+    	{
+    		return true;
+    	}
+    	return false;
+    }
 }	

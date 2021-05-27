@@ -1,15 +1,22 @@
 package projet_echecs;
 
 public class Cavalier extends Piece {
-	
-	private int[][] CoCav = {{-2,1},{-1,2},{1,2},{2,1},{2,-1},{1,-2},{-1,-2},{-2,-1}};
 
-	public Cavalier(char couleur) {
+	public Cavalier(char couleur) 
+	{
 		super(couleur, "C");
-		this.Co = new int[this.CoCav.length][2];
-		for(int i = 0; i < this.CoCav.length; i++)
+	}
+	
+	public boolean deplacementOk(Case c)
+	{
+		if ((c.getLigne() == this.getCase().getLigne() + 2 || c.getLigne() == this.getCase().getLigne() -2) && (c.getColonne() == this.getCase().getColonne() + 1 || c.getColonne() == this.getCase().getColonne() - 1 ))
 		{
-			this.Co[i] = this.CoCav[i];
+			return true;
 		}
+		else if ((c.getLigne() == this.getCase().getLigne() + 1 || c.getLigne() == this.getCase().getLigne() -1) && (c.getColonne() == this.getCase().getColonne() + 2 || c.getColonne() == this.getCase().getColonne() - 2))
+		{
+			return true;
+		}
+	    return false;
 	}
 }

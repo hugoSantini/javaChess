@@ -3,16 +3,9 @@ package projet_echecs;
 import java.util.ArrayList;
 
 public class Tour extends Piece {
-	
-	private int[][] CoTour = {{1,0},{0,1},{-1,0},{0,-1}};
 
 	public Tour(char couleur) {
 		super(couleur, "T");
-		this.Co = new int[this.CoTour.length][2];
-		for(int i = 0; i < this.CoTour.length; i++)
-		{
-			this.Co[i] = this.CoTour[i];
-		}
 	}
 	
 	

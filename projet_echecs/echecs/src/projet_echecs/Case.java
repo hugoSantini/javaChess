@@ -5,6 +5,7 @@ public class Case {
 	private int Ligne;
 	private int Colonne;
 	private static Case[][] Cases = new Case[8][8];
+	private boolean presence;
 	
 	public Case(int L, int C)
 	{
@@ -57,6 +58,15 @@ public class Case {
 		this.Colonne = colonne;
 	}
 	
+	public boolean getPresence()
+	{
+		return this.presence;
+	}
+	
+	public void setPresence(boolean b)
+	{
+		this.presence = b;
+	}
 	
 	public String toString()
 	{

@@ -15,13 +15,9 @@ public class Plateau {
 		return this.plateau[c.getLigne()][c.getColonne()];
 	}
 	
-	public Piece getPiece(int x, int y)
+	public Piece getPiece(int x, int y) throws Exception
 	{
-		if (this.plateau[x][y] instanceof Tour)
-		{
-			return (Tour) this.plateau[x][y];
-		}
-		return null;
+			return this.plateau[x][y];
 	}
 	
 	public void setPiece(Case c, Piece p)
@@ -35,7 +31,8 @@ public class Plateau {
 		String str = "";
 		for(int i=0 ; i < 8; i+=1)
 		{
-			str += String.valueOf(9-(i+1))+ "  ";
+			//str += String.valueOf(9-(i+1))+ "  "; = vrai ligne 
+			str += String.valueOf(i)+ "  "; // visuel pour coordonnées
 			for(int j=0 ; j < 8; j+=1)
 			{
 				if(this.plateau[i][j] != null)
@@ -49,7 +46,8 @@ public class Plateau {
 			}
 			str+="\n";
 		}
-		str += "\n   A  B  C  D  E  F  G  H";
+		//str += "\n   A  B  C  D  E  F  G  H"; = vrai ligne
+		str += "\n   0  1  2  3  4  5  6  7"; //visuel coordonnées
 		return str;
 	}
 	

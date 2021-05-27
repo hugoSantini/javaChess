@@ -1,10 +1,13 @@
 package projet_echecs;
 
+import java.util.ArrayList;
+
 public class Piece {
 	
 	private Case c;
 	private char couleur;
 	private String Nom;
+	private boolean peutPrendre;
 	protected int[][] Co;
 	
 	
@@ -39,9 +42,37 @@ public class Piece {
 		this.couleur = couleur;
 	}
 	
+	public void setPeutPrendre()
+	{
+		this.peutPrendre = false;
+		for (Case c : this.CasesPossible())
+		{
+			if (c.getPresence())
+			{
+				this.peutPrendre = true;
+			}
+		}
+	}
+	
+	public void setPeutPrendre(boolean b)
+	{
+		this.peutPrendre = b;
+	}
+	
+	public boolean getPeutPrendre()
+	{
+		return this.peutPrendre;
+	}
+	
 	public boolean deplacementOk(Case caseA)
 	{
 		return false;
+	}
+	
+	public ArrayList<Case> CasesPossible()
+	{
+		ArrayList<Case> CaseP = new ArrayList<Case>();
+		return CaseP;
 	}
 	
 	public boolean deplacer(Case caseA)
