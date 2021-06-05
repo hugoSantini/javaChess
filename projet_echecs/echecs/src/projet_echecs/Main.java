@@ -6,7 +6,8 @@ public class Main
 	{
 		Plateau p = new Plateau();
 		System.out.println(p);
-		System.out.println(p.getPiece(0,7));
-		System.out.println(p.getPiece(0,7).deplacementOk(Case.getCase(4,7)));
+		Piece m = p.getRoi('B');
+		p.deplacer(p.getPiece(1,2), Case.getCase(3, 2));
+		System.out.println(p);
 	}
 }

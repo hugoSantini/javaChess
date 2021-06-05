@@ -10,6 +10,11 @@ public class Plateau {
 		this.initialize();
 	}
 	
+	public Piece[][] getPlateau()
+	{
+		return this.plateau;
+	}
+	
 	public Piece getPiece(Case c)
 	{
 		return this.plateau[c.getLigne()][c.getColonne()];
@@ -18,6 +23,22 @@ public class Plateau {
 	public Piece getPiece(int x, int y)
 	{
 			return this.plateau[x][y];
+	}
+	
+	public Roi getRoi(char c)
+	{
+		for (int i = 0; i < 8; i++)
+		{
+			for (Piece p : this.getPlateau()[i])
+			{
+				if (p instanceof Roi && p.getCouleur() == c)
+				{
+					return (Roi) p;
+				}
+			}
+		}
+		System.out.println("Pas de roi " + c);
+		return null;
 	}
 	
 	public void setPiece(Case c, Piece p)
@@ -45,12 +66,19 @@ public class Plateau {
 				{
 					this.setPiece(p.getCase(),null);
 					this.setPiece(c, p);
+					p.setPremierCoup(false);
 				}
 			}
 			else
 			{
 				this.setPiece(p.getCase(),null);
 				this.setPiece(c, p);
+				p.setPremierCoup(false);
+				if (p.CasesPossible().contains(this.getRoi('B').getCase()))
+				{
+					System.out.println("échecs !!");
+					this.getRoi('B').setEstEchec(true);
+				}
 			}
 		}
 	}
@@ -132,17 +160,16 @@ public class Plateau {
 		for(char i = 0; i <= 7; i++)
 		{
 			setPiece(c[1][i], new Pion('N'));
+			setPiece(c[6][i], new Pion('B'));
 		}
 		
 			setPiece(c[7][0], new Tour('B'));
 			setPiece(c[7][1], new Cavalier('B'));
 			setPiece(c[7][2], new Fous('B'));
 			setPiece(c[7][3], new Dame('B'));
-			setPiece(c[7][4], new Roi('B'));
+			setPiece(c[4][3], new Roi('B'));
 			setPiece(c[7][5], new Fous('B'));
 			setPiece(c[7][6], new Cavalier('B'));
 			setPiece(c[7][7], new Tour('B'));
-			
-			setPiece(c[4][5], new Cavalier('B'));
 	}
 }

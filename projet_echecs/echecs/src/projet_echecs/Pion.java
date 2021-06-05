@@ -4,11 +4,11 @@ import java.util.ArrayList;
 
 public class Pion extends Piece
 {
-	private boolean premierCoup;
 	private boolean peutPrendre;
 
 	public Pion(char couleur) {
 		super(couleur, "P");
+		this.peutPrendre = false;
 	}
 	
 	public void setPeutPrendre()
@@ -35,59 +35,45 @@ public class Pion extends Piece
 	
 	public boolean deplacementOk(Case c)
 	{
-		if (this.getPeutPrendre())
+		if(this.getCouleur() == 'N')
 		{
-			if(this.getCouleur() == 'N')
+			if(c.getColonne() == this.getCase().getColonne() + 1 && c.getLigne() == this.getCase().getLigne() + 1)
 			{
-				if(c.getColonne() == this.getCase().getColonne() + 1 && c.getLigne() == this.getCase().getLigne() + 1)
-				{
-					return true;
-				}
-				else if(c.getColonne() == this.getCase().getColonne() - 1 && c.getLigne() == this.getCase().getLigne() + 1)
-				{
-					return true;
-				}
-				return false;
+				return true;
 			}
-			else
+			else if(c.getColonne() == this.getCase().getColonne() - 1 && c.getLigne() == this.getCase().getLigne() + 1)
 			{
-				if(c.getColonne() == this.getCase().getColonne() + 1 && c.getLigne() == this.getCase().getLigne() - 1)
-				{
-					return true;
-				}
-				else if(c.getColonne() == this.getCase().getColonne() - 1 && c.getLigne() == this.getCase().getLigne() - 1)
-				{
-					return true;
-				}
-				return false;
+				return true;
 			}
+			else if(c.getColonne() == this.getCase().getColonne() && c.getLigne() == this.getCase().getLigne() + 1)
+			{
+				return true;
+			}
+			else if(this.getPremierCoup() && c.getColonne() == this.getCase().getColonne() && c.getLigne() == this.getCase().getLigne() + 2)
+			{
+				return true;
+			}
+			return false;
 		}
 		else
 		{
-			if(this.getCouleur() == 'N')
+			if(c.getColonne() == this.getCase().getColonne() + 1 && c.getLigne() == this.getCase().getLigne() - 1)
 			{
-				if(c.getColonne() == this.getCase().getColonne() && c.getLigne() == this.getCase().getLigne() + 1)
-				{
-					return true;
-				}
-				else if(premierCoup && c.getColonne() == this.getCase().getColonne() && c.getLigne() == this.getCase().getLigne() + 2)
-				{
-					return true;
-				}
-				return false;
+				return true;
 			}
-			else
+			else if(c.getColonne() == this.getCase().getColonne() - 1 && c.getLigne() == this.getCase().getLigne() - 1)
 			{
-				if(c.getColonne() == this.getCase().getColonne() && c.getLigne() == this.getCase().getLigne() - 1)
-				{
-					return true;
-				}
-				else if(premierCoup && c.getColonne() == this.getCase().getColonne() && c.getLigne() == this.getCase().getLigne() - 2)
-				{
-					return true;
-				}
-				return false;
+				return true;
 			}
+			if(c.getColonne() == this.getCase().getColonne() && c.getLigne() == this.getCase().getLigne() - 1)
+			{
+				return true;
+			}
+			else if(this.getPremierCoup() && c.getColonne() == this.getCase().getColonne() && c.getLigne() == this.getCase().getLigne() - 2)
+			{
+				return true;
+			}
+			return false;
 		}
 	}
 	
@@ -97,8 +83,49 @@ public class Pion extends Piece
 		{
 			if (this.getCase().getColonne() == c.getColonne())
 			{
-				return false;
+				if (this.getCouleur() == 'N')
+				{
+					if (this.getCase().getLigne() + 2 == c.getLigne())
+					{
+						if (Case.getCase(c.getLigne() + 1, c.getColonne()).getPresence() || c.getPresence())
+						{
+							return false;
+						}
+					}
+					else
+					{
+						if (c.getPresence())
+						{
+							return false;
+						}
+					}
+				}
+				else 
+				{
+					if (this.getCase().getLigne() - 2 == c.getLigne())
+					{
+						if (Case.getCase(c.getLigne() - 1, c.getColonne()).getPresence() || c.getPresence())
+						{
+							return false;
+						}
+					}
+					else
+					{
+						if (c.getPresence())
+						{
+							return false;
+						}
+					}
+				}
 			}
+			else
+			{
+				if(!c.getPresence())
+				{
+					return false;
+				}
+			}
+			return true;
 		}
 		return false;
 	}
@@ -121,7 +148,8 @@ public class Pion extends Piece
 		
 		if (CaseP.isEmpty())
 		{
-			return null;
+			System.out.println("La pièce de ne peut pas se déplacer");
+			return CaseP;
 		}
 		return CaseP;
 	}

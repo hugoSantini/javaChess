@@ -4,17 +4,30 @@ import java.util.ArrayList;
 
 public class Roi extends Piece
 {
+	private boolean estEchec;
 
 	public Roi(char couleur)
 	{
 		super(couleur, "R");
 	}
 	
+	public boolean getEstEchec()
+	{
+		return this.estEchec;
+	}
+	
+	public void setEstEchec(boolean b)
+	{
+		this.estEchec = b;
+	}
+	
 	public boolean deplacementOk(Case c)
 	{
     	if(     (c.getLigne() == this.getCase().getLigne() || c.getLigne() == this.getCase().getLigne() - 1 || c.getLigne() == this.getCase().getLigne() + 1)
     			&&
-    			(-1 <= c.getColonne() - this.getCase().getColonne() && c.getColonne() - this.getCase().getColonne() <= 1))
+    			(-1 <= c.getColonne() - this.getCase().getColonne() && c.getColonne() - this.getCase().getColonne() <= 1)
+    			&&
+    			(c != this.getCase()))
     	{
     		return true;
     	}
@@ -23,7 +36,7 @@ public class Roi extends Piece
 	
 	public boolean deplacementPossible(Case c)
 	{
-		return false;
+		return this.deplacementOk(c);
 	}
 	
 	//Renvoie la liste des cases repondant a deplacement possible
