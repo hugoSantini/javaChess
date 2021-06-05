@@ -15,16 +15,49 @@ public class Plateau {
 		return this.plateau[c.getLigne()][c.getColonne()];
 	}
 	
-	public Piece getPiece(int x, int y) throws Exception
+	public Piece getPiece(int x, int y)
 	{
 			return this.plateau[x][y];
 	}
 	
 	public void setPiece(Case c, Piece p)
 	{
-		p.setCase(c);
 		this.plateau[c.getLigne()][c.getColonne()] = p;
+		if (p != null)
+		{
+			c.setPresence(true);
+			p.setCase(c);
+		}
+		else
+		{
+			c.setPresence(false);
+		}
 	}
+	
+	
+	public void deplacer(Piece p, Case c)
+	{
+		if (p.CasesPossible().contains(c) )
+		{
+			if (c.getPresence())
+			{
+				if (this.getPiece(c).getCouleur() != p.getCouleur())
+				{
+					this.setPiece(p.getCase(),null);
+					this.setPiece(c, p);
+				}
+			}
+			else
+			{
+				this.setPiece(p.getCase(),null);
+				this.setPiece(c, p);
+			}
+		}
+	}
+	
+	
+	
+	
 	
 	public String toString()
 	{
@@ -99,7 +132,6 @@ public class Plateau {
 		for(char i = 0; i <= 7; i++)
 		{
 			setPiece(c[1][i], new Pion('N'));
-			setPiece(c[6][i], new Pion('B'));
 		}
 		
 			setPiece(c[7][0], new Tour('B'));
@@ -110,5 +142,7 @@ public class Plateau {
 			setPiece(c[7][5], new Fous('B'));
 			setPiece(c[7][6], new Cavalier('B'));
 			setPiece(c[7][7], new Tour('B'));
+			
+			setPiece(c[4][5], new Cavalier('B'));
 	}
 }

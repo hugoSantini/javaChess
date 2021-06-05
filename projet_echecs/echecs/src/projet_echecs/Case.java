@@ -11,8 +11,9 @@ public class Case {
 	{
 		this.Ligne = L;
 		this.Colonne = C;
+		this.presence = false;
 		
-		Cases[L][C] = new Case(this);
+		Cases[L][C] = this;
 	}
 	
 	public Case(Case c)

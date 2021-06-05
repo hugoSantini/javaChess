@@ -1,5 +1,7 @@
 package projet_echecs;
 
+import java.util.ArrayList;
+
 public class Roi extends Piece
 {
 
@@ -18,4 +20,32 @@ public class Roi extends Piece
     	}
     	return false;
     }
+	
+	public boolean deplacementPossible(Case c)
+	{
+		return false;
+	}
+	
+	//Renvoie la liste des cases repondant a deplacement possible
+	public ArrayList<Case> CasesPossible()
+	{
+		ArrayList<Case> CaseP = new ArrayList<Case>();
+		
+		for (int i = 0; i < 8; i++)
+		{
+			for (int j = 0; j < 8; j ++)
+			{
+				if (this.deplacementPossible(Case.getCase(i, j)))
+				{
+					CaseP.add(Case.getCase(i, j));
+				}
+			}
+		}
+		
+		if (CaseP.isEmpty())
+		{
+			return null;
+		}
+		return CaseP;
+	}
 }	
