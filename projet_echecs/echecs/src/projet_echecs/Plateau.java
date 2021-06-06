@@ -1,30 +1,30 @@
 package projet_echecs;
 
 public class Plateau {
-	
+
 	private Piece[][] plateau;
-	
+
 	public Plateau()
 	{
 		this.plateau = new Piece[8][8];
 		this.initialize();
 	}
-	
+
 	public Piece[][] getPlateau()
 	{
 		return this.plateau;
 	}
-	
+
 	public Piece getPiece(Case c)
 	{
 		return this.plateau[c.getLigne()][c.getColonne()];
 	}
-	
+
 	public Piece getPiece(int x, int y)
 	{
 			return this.plateau[x][y];
 	}
-	
+
 	public Roi getRoi(char c)
 	{
 		for (int i = 0; i < 8; i++)
@@ -40,7 +40,7 @@ public class Plateau {
 		System.out.println("Pas de roi " + c);
 		return null;
 	}
-	
+
 	public void setPiece(Case c, Piece p)
 	{
 		this.plateau[c.getLigne()][c.getColonne()] = p;
@@ -54,8 +54,8 @@ public class Plateau {
 			c.setPresence(false);
 		}
 	}
-	
-	
+
+
 	public void deplacer(Piece p, Case c)
 	{
 		if (p.CasesPossible().contains(c) )
@@ -76,24 +76,24 @@ public class Plateau {
 				p.setPremierCoup(false);
 				if (p.CasesPossible().contains(this.getRoi('B').getCase()))
 				{
-					System.out.println("échecs !!");
+					System.out.println("ï¿½checs !!");
 					this.getRoi('B').setEstEchec(true);
 				}
 			}
 		}
 	}
-	
-	
-	
-	
-	
+
+
+
+
+
 	public String toString()
 	{
 		String str = "";
 		for(int i=0 ; i < 8; i+=1)
 		{
-			//str += String.valueOf(9-(i+1))+ "  "; = vrai ligne 
-			str += String.valueOf(i)+ "  "; // visuel pour coordonnées
+			//str += String.valueOf(9-(i+1))+ "  "; = vrai ligne
+			str += String.valueOf(i)+ "  "; // visuel pour coordonnï¿½es
 			for(int j=0 ; j < 8; j+=1)
 			{
 				if(this.plateau[i][j] != null)
@@ -108,10 +108,10 @@ public class Plateau {
 			str+="\n";
 		}
 		//str += "\n   A  B  C  D  E  F  G  H"; = vrai ligne
-		str += "\n   0  1  2  3  4  5  6  7"; //visuel coordonnées
+		str += "\n   0  1  2  3  4  5  6  7"; //visuel coordonnï¿½es
 		return str;
 	}
-	
+
 	public void viderPlateau()
 	{
 		for(int i=0 ; i < 8; i+=1)
@@ -122,12 +122,56 @@ public class Plateau {
 			}
 		}
 	}
+	private boolean mateTest(char couleur){
+	// N = Blanc; B = Noir
+	ArrayList<Case> caseDisponible = null;
+	ArrayList<Case> caseTemp;
+	ArrayList<Case> caseDepRoi;
 
-	
+	for (Piece[] pArray: plateau) {
+		for (Piece p : pArray) {
+			if (p.getCouleur() != couleur) {
+				caseTemp = p.testMatePiece();
+				for (int i = 0; i<caseTemp.size();i++) {
+					caseDisponible.add(caseTemp.get(i));
+				}
+			}
+		}
+
+	}
+	return false;
+}
+
+public Case roiBlancPosition() {
+	Case caseRoiB;
+	for(int i = 0; i < this.plateau.length; i++){
+			for(int j = 0; j < this.plateau[i].length; j++){
+				if(this.plateau[i][j] != null && this.plateau[i][j].getClass() == Roi.class && this.plateau[i][j].getCouleur() == 'B'){
+					caseRoiB = this.plateau[i][j].getCase();
+					return caseRoiB;
+				}
+			}
+		}
+	return null;
+	}
+
+public Case roiNoirPosition() {
+	Case caseRoiB;
+	for(int i = 0; i < this.plateau.length; i++){
+			for(int j = 0; j < this.plateau[i].length; j++){
+				if(this.plateau[i][j] != null && this.plateau[i][j].getClass() == Roi.class && this.plateau[i][j].getCouleur() == 'N'){
+					caseRoiB = this.plateau[i][j].getCase();
+					return caseRoiB;
+				}
+			}
+		}
+	return null;
+	}
+
 	public void initialize()
 	{
 		Case[][] c = new Case[8][8];
-		
+
 		for(int i=0 ; i < 8; i++)
 		{
 			for(int j=0 ; j < 8; j++)
@@ -135,8 +179,8 @@ public class Plateau {
 				 c[i][j] = new Case(i,j);
 			}
 		}
-		
-		
+
+
 		for(int i = 0; i < plateau.length; i++)
 		{
 			for(int j = 0; j < plateau[i].length; j++)
@@ -144,9 +188,9 @@ public class Plateau {
 				plateau[i][j] = null;
 			}
 		}
-		
-		
-		
+
+
+
 		setPiece(c[0][0], new Tour('N'));
 		setPiece(c[0][1], new Cavalier('N'));
 		setPiece(c[0][2], new Fous('N'));
@@ -155,14 +199,14 @@ public class Plateau {
 		setPiece(c[0][5], new Fous('N'));
 		setPiece(c[0][6], new Cavalier('N'));
 		setPiece(c[0][7], new Tour('N'));
-		
-		
+
+
 		for(char i = 0; i <= 7; i++)
 		{
 			setPiece(c[1][i], new Pion('N'));
 			setPiece(c[6][i], new Pion('B'));
 		}
-		
+
 			setPiece(c[7][0], new Tour('B'));
 			setPiece(c[7][1], new Cavalier('B'));
 			setPiece(c[7][2], new Fous('B'));
