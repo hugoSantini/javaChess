@@ -6,7 +6,7 @@ public class Pion extends Piece
 {
 	private boolean peutPrendre;
 
-	public Pion(char couleur) {
+	public Pion(boolean couleur) {
 		super(couleur, "P");
 		this.peutPrendre = false;
 	}
@@ -35,7 +35,7 @@ public class Pion extends Piece
 	
 	public boolean deplacementOk(Case c)
 	{
-		if(this.getCouleur() == 'N')
+		if(!this.getCouleur())
 		{
 			if(c.getColonne() == this.getCase().getColonne() + 1 && c.getLigne() == this.getCase().getLigne() + 1)
 			{
@@ -83,11 +83,11 @@ public class Pion extends Piece
 		{
 			if (this.getCase().getColonne() == c.getColonne())
 			{
-				if (this.getCouleur() == 'N')
+				if (!this.getCouleur())
 				{
 					if (this.getCase().getLigne() + 2 == c.getLigne())
 					{
-						if (Case.getCase(c.getLigne() + 1, c.getColonne()).getPresence() || c.getPresence())
+						if (Case.getCase(c.getLigne() - 1, c.getColonne()).getPresence() || c.getPresence())
 						{
 							return false;
 						}
@@ -104,7 +104,7 @@ public class Pion extends Piece
 				{
 					if (this.getCase().getLigne() - 2 == c.getLigne())
 					{
-						if (Case.getCase(c.getLigne() - 1, c.getColonne()).getPresence() || c.getPresence())
+						if (Case.getCase(c.getLigne() + 1, c.getColonne()).getPresence() || c.getPresence())
 						{
 							return false;
 						}
@@ -148,7 +148,7 @@ public class Pion extends Piece
 		
 		if (CaseP.isEmpty())
 		{
-			System.out.println("La pièce de ne peut pas se déplacer");
+			System.out.println("Le Pion " + this.getCase().getLigne() + "," + this.getCase().getColonne() + " ne peut pas se déplacer");
 			return CaseP;
 		}
 		return CaseP;

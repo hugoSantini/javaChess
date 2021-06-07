@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class Dame extends Piece
 {
-	public Dame(char couleur)
+	public Dame(boolean couleur)
 	{
 		super(couleur, "D");
 	}

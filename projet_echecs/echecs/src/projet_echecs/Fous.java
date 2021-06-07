@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public class Fous extends Piece{
 	
 
-	public Fous(char couleur) {
+	public Fous(boolean couleur) {
 		super(couleur, "F");
 	}
 		

@@ -6,7 +6,7 @@ public class Roi extends Piece
 {
 	private boolean estEchec;
 
-	public Roi(char couleur)
+	public Roi(boolean couleur)
 	{
 		super(couleur, "R");
 	}

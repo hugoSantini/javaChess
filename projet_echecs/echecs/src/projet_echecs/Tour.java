@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class Tour extends Piece {
 
-	public Tour(char couleur) {
+	public Tour(boolean couleur) {
 		super(couleur, "T");
 	}
 	
