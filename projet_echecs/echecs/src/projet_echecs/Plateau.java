@@ -84,6 +84,126 @@ public class Plateau {
 		this.setPiece(p.getCase(), new Fous(p.getCouleur()));
 	}
 	
+	public boolean clouage(Piece p)
+	{
+		boolean clouage = false;
+		if (! (p instanceof Roi) )
+		{ //test si la piece est clouée
+			this.setPiece(p.getCase(), null);
+			for (int j = 0; j < 8; j++)
+			{
+				for (Piece piece : this.getPlateau()[j])
+				{
+					if (piece != null)
+					{
+						if (piece.getCouleur() != p.getCouleur())
+						{
+							if (piece.CasesPossible().contains(this.getRoi(p.getCouleur()).getCase()))
+							{
+								this.setPiece(p.getCase(), p);
+								clouage = true;
+								System.out.println("La piece " + p + " est clouée par : " + piece);
+							}
+						}
+					}
+				}
+			}
+			this.setPiece(p.getCase(), p);
+		}
+		return clouage;
+	}
+	
+	public boolean bloqueEchec(Piece p, Case c)
+	{
+		boolean peutBloquer = true;
+		
+		if (this.getRoi(p.getCouleur()).getEstEchec() && !(p instanceof Roi)) 
+		{ //test si roi en echec et piece qui veut etre jouer pas le roi
+			this.setPiece(c,p);
+			for (int j = 0; j < 8; j++)
+			{
+				for (Piece piece : this.getPlateau()[j])
+				{
+					if (piece != null)
+					{
+						if (piece.getCouleur() != p.getCouleur())
+						{
+							if (piece.CasesPossible().contains(this.getRoi(p.getCouleur()).getCase()))
+							{
+								peutBloquer = false;
+								System.out.println("Votre roi est attaqué par : " + piece);
+							}
+						}
+					}
+				}
+			}
+			this.setPiece(c, null);
+		}
+		return peutBloquer;
+	}
+	
+	public boolean estEchec(boolean couleur)
+	{	
+		for (int i = 0; i < 8; i++)
+		{ // test pour les decouvertes
+			for (Piece t : this.getPlateau()[i])
+			{
+				if (t != null)
+				{
+					if (t.getCouleur() != couleur)
+					{
+						if (t.CasesPossible().contains(this.getRoi(couleur).getCase()))
+						{
+							System.out.println("échecs !! (par " + t + ")");
+							this.getRoi(couleur).setEstEchec(true);
+						}
+					}
+				}
+			}
+		}
+		return this.getRoi(couleur).getEstEchec();
+	}
+	
+	public boolean deplacementRoi(Roi p, Case c)
+	{
+		boolean protege = false;
+		 //controle que la case ou le roi va n'est pas controlée par une pièce adverse
+		for (int i = 0; i < 8; i++)
+		{
+			for (Piece t : this.getPlateau()[i])
+			{
+				if (t instanceof Pion)
+				{
+					if (t.getCouleur() != p.getCouleur())
+					{
+						if (t.deplacementOk(c) && c.getColonne() != t.getCase().getColonne())
+						{
+							System.out.println("Deplacement du roi en : " + c.getLigne() + "," + c.getColonne() + " impossible, la case est controléee par : " + t + "\n");
+							protege = true;
+						}
+					}
+				}
+				else if (t != null && t != p)
+				{
+					if (t.CasesPossible().contains(c))
+					{
+						System.out.println("Deplacement du roi en : " + c.getLigne() + "," + c.getColonne() + " impossible, la case est controlée par : " + t + "\n");
+						protege = true;
+					}
+				}
+			}
+		}	
+		return protege;
+	}
+	
+	public void deplacement(Piece p, Case c)
+	{
+		this.setPiece(p.getCase(),null);
+		this.setPiece(c, p);
+		p.setPremierCoup(false);
+		this.getRoi(p.getCouleur()).setEstEchec(false);
+	}
+	
 	public void deplacer(Piece p, Case c)
 	{
 		boolean clouage = false;
