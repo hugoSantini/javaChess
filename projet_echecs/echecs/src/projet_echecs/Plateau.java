@@ -1,5 +1,7 @@
 package projet_echecs;
 
+import java.util.Scanner;
+
 public class Plateau {
 	
 	private Piece[][] plateau;
@@ -62,12 +64,57 @@ public class Plateau {
 		}
 	}
 	
+	public void promotionDame(Piece p)
+	{
+		p = new Dame(p.getCouleur());
+	}
+	
+	public void promotionTour(Piece p)
+	{
+		this.setPiece(p.getCase(), new Tour(p.getCouleur()));
+	}
+	
+	public void promotionCavalier(Piece p)
+	{
+		p = new Cavalier(p.getCouleur());
+	}
+	
+	public void promotionFou(Piece p)
+	{
+		this.setPiece(p.getCase(), new Fous(p.getCouleur()));
+	}
 	
 	public void deplacer(Piece p, Case c)
 	{
 		boolean clouage = false;
+		boolean peutBloquer = true;
 		
-		if (! (p instanceof Roi))
+		if (this.getRoi(p.getCouleur()).getEstEchec() && !(p instanceof Roi)) 
+		{ //test si roi en echec et piece qui veut etre jouer pas le roi
+			this.setPiece(c,p);
+			for (int j = 0; j < 8; j++)
+			{
+				for (Piece piece : this.getPlateau()[j])
+				{
+					if (piece != null)
+					{
+						if (piece.getCouleur() != p.getCouleur())
+						{
+							if (piece.CasesPossible().contains(this.getRoi(p.getCouleur()).getCase()))
+							{
+								peutBloquer = false;
+								System.out.println("Votre roi est attaqué par : " + piece);
+							}
+						}
+					}
+				}
+			}
+			this.setPiece(c, null);
+			System.out.println("ok");
+			System.out.println(this.getRoi(p.getCouleur()).getEstEchec());
+		}
+		
+		if (! (p instanceof Roi) && peutBloquer)
 		{ //test si la piece est clouée
 			this.setPiece(p.getCase(), null);
 			for (int j = 0; j < 8; j++)
@@ -82,7 +129,7 @@ public class Plateau {
 							{
 								this.setPiece(p.getCase(), p);
 								clouage = true;
-								System.out.println("La piece est clouée par : " + piece);
+								System.out.println("La piece " + p + " est clouée par : " + piece);
 							}
 						}
 					}
@@ -90,60 +137,88 @@ public class Plateau {
 			}
 			this.setPiece(p.getCase(), p);
 		}
-		
-		if (this.getRoi(p.getCouleur()).getEstEchec() && !(p instanceof Roi)) //test si roi en echec et piece qui veut etre jouer pas le roi
+			
+		if (p.CasesPossible().contains(c) && !clouage && peutBloquer)
 		{
-			clouage = true;
-		}
-		else 
-		{
-			if (p.CasesPossible().contains(c) && !clouage)
-			{
-				boolean protege = false;
+			boolean protege = false;
 				
-				if (p instanceof Roi)
-				{ //controle que la case ou le roi va n'est pas controlée par une pièce adverse
-					for (int i = 0; i < 8; i++)
+			if (p instanceof Roi)
+			{ //controle que la case ou le roi va n'est pas controlée par une pièce adverse
+				for (int i = 0; i < 8; i++)
+				{
+					for (Piece t : this.getPlateau()[i])
 					{
-						for (Piece t : this.getPlateau()[i])
+						if (t instanceof Pion)
 						{
-							if (t instanceof Pion)
+							if (t.getCouleur() != p.getCouleur())
 							{
-								if (t.getCouleur() != p.getCouleur())
+								if (t.deplacementOk(c) && c.getColonne() != t.getCase().getColonne())
 								{
-									if (t.deplacementOk(c) && c.getColonne() != t.getCase().getColonne())
-									{
-										System.out.println("Deplacement du roi en : " + c.getLigne() + "," + c.getColonne() + " impossible, la case est controléee par : " + t + "\n");
-										protege = true;
-									}
-								}
-							}
-							else if (t != null && t != p)
-							{
-								if (t.CasesPossible().contains(c))
-								{
-									System.out.println("Deplacement du roi en : " + c.getLigne() + "," + c.getColonne() + " impossible, la case est controlée par : " + t + "\n");
+									System.out.println("Deplacement du roi en : " + c.getLigne() + "," + c.getColonne() + " impossible, la case est controléee par : " + t + "\n");
 									protege = true;
 								}
 							}
 						}
+						else if (t != null && t != p)
+						{
+							if (t.CasesPossible().contains(c))
+							{
+								System.out.println("Deplacement du roi en : " + c.getLigne() + "," + c.getColonne() + " impossible, la case est controlée par : " + t + "\n");
+								protege = true;
+							}
+						}
 					}
 				}
-				if (c.getPresence() && !protege)
-				{//controle si la case destination est occupée
-					if (this.getPiece(c).getCouleur() != p.getCouleur())
-					{
-						this.setPiece(p.getCase(),null);
-						this.setPiece(c, p);
-						p.setPremierCoup(false);
-						this.getRoi(p.getCouleur()).setEstEchec(false);
-						if (p.CasesPossible().contains(this.getRoi(!p.getCouleur()).getCase()))
+			}
+				
+			if (c.getPresence() && !protege)
+			{//controle si la case destination est occupée
+				if (this.getPiece(c).getCouleur() != p.getCouleur())
+				{
+					this.setPiece(p.getCase(),null);
+					System.out.println("case : " + p.getCase().getLigne() + "," + p.getCase().getColonne() + " prend null");
+					this.setPiece(c, p);
+					p.setPremierCoup(false);
+					this.getRoi(p.getCouleur()).setEstEchec(false);
+					if (p instanceof Pion)
+					{ // test pour promotion
+						if((p.getCouleur() && c.getLigne() == 0) || (!p.getCouleur() && c.getLigne() == 7))
 						{
-							System.out.println("échecs !! (par " + p + ")");
-							this.getRoi(!p.getCouleur()).setEstEchec(true);
+							System.out.println("Promotion?");
+							Scanner sc = new Scanner(System.in);
+							String prom = sc.nextLine();
+							if (prom.equals("Dame"))
+							{
+								this.promotionDame(p);
+							}
+							else if (prom.equals("Fous"))
+							{
+								this.promotionFou(p);
+							}
+							else if (prom.equals("Tour"))
+							{
+								this.promotionTour(p);
+							}
+							else if (prom.equals("Cavalier"))
+							{
+								this.promotionCavalier(p);
+							}
+							else
+							{
+								System.out.println("Promotion invalide");
+							}
+							sc.close();
 						}
+					}
+					if (p.CasesPossible().contains(this.getRoi(!p.getCouleur()).getCase()))
+					{ // test si la pièce déplacé met en échecs
+						System.out.println("échecs !! (par " + p + ")");
+						this.getRoi(!p.getCouleur()).setEstEchec(true);
+					}
+					else
+					{
 						for (int i = 0; i < 8; i++)
-						{
+						{ // boucle qui test les découvertes
 							for (Piece t : this.getPlateau()[i])
 							{
 								if (t != null)
@@ -159,19 +234,51 @@ public class Plateau {
 						}
 					}
 				}
-				else if(!protege)
-				{
-					this.setPiece(p.getCase(),null);
-					this.setPiece(c, p);
-					p.setPremierCoup(false);
-					this.getRoi(p.getCouleur()).setEstEchec(false);
-					if (p.CasesPossible().contains(this.getRoi(!p.getCouleur()).getCase()))
+			}
+			else if(!protege)
+			{ // si la case est libre
+				this.setPiece(p.getCase(),null);
+				System.out.println("case : " + p.getCase().getLigne() + "," + p.getCase().getColonne() + " prend null");
+				this.setPiece(c, p);
+				System.out.println("case : " + p.getCase().getLigne() + "," + p.getCase().getColonne() + " prend " + p);
+				p.setPremierCoup(false);
+				this.getRoi(p.getCouleur()).setEstEchec(false);
+				System.out.println(this.getRoi(p.getCouleur()).getEstEchec());
+				if (p instanceof Pion)
+				{ // test pour promotion
+					if((p.getCouleur() && c.getLigne() == 0) || (!p.getCouleur() && c.getLigne() == 7))
 					{
-						System.out.println("échecs !! (par " + p + ")");
-						this.getRoi(!p.getCouleur()).setEstEchec(true);
+						System.out.println("Promotion?");
+						Scanner sc = new Scanner(System.in);
+						String prom = sc.nextLine();
+						if (prom == "Dame")
+						{
+							this.promotionDame(p);
+						}
+						else if (prom == "Fous")
+						{
+							this.promotionFou(p);
+						}
+						else if (prom == "Tour")
+						{
+							this.promotionTour(p);
+						}
+						else if (prom == "Cavalier")
+						{
+							this.promotionCavalier(p);
+						}
+						sc.close();
 					}
+				}
+				if (p.CasesPossible().contains(this.getRoi(!p.getCouleur()).getCase()))
+				{ // test si la piece met en echecs
+					System.out.println("échecs !! (par " + p + ")");
+					this.getRoi(!p.getCouleur()).setEstEchec(true);
+				}
+				else
+				{
 					for (int i = 0; i < 8; i++)
-					{
+					{ // test pour les decouvertes
 						for (Piece t : this.getPlateau()[i])
 						{
 							if (t != null)
@@ -278,5 +385,7 @@ public class Plateau {
 			setPiece(c[7][5], new Fous(true));
 			setPiece(c[7][6], new Cavalier(true));
 			setPiece(c[7][7], new Tour(true));
+			
+			setPiece(c[2][2], new Pion(true));
 	}
 }
