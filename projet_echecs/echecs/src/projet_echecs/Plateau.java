@@ -1,5 +1,6 @@
 package projet_echecs;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Plateau {
@@ -200,6 +201,21 @@ public class Plateau {
 			}
 		}	
 		return protege;
+	}
+	
+	
+	//Renvoie une liste des cases possible pour le roi passé en paramètre (tenant compte des pièces adverses)
+	public ArrayList<Case> deplacementRoiPossible(Roi p)
+	{
+		ArrayList<Case> caseRoi = new ArrayList<Case>();
+		for (Case c : p.CasesPossible())
+		{
+			if (!this.deplacementRoi(p, c))
+			{
+				caseRoi.add(c);
+			}
+		}
+		return caseRoi;
 	}
 	
 	// effectue un deplacement 
