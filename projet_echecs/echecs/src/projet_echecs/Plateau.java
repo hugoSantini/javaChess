@@ -218,6 +218,48 @@ public class Plateau {
 		return caseRoi;
 	}
 	
+	//test si un joeur est en échecs et mat
+	public boolean testMat()
+	{
+		if (this.deplacementRoiPossible(this.getRoi(true)).isEmpty() && this.getRoi(true).getEstEchec())
+		{
+			return true;
+		}
+		else if (this.deplacementRoiPossible(this.getRoi(false)).isEmpty() && this.getRoi(false).getEstEchec())
+		{
+			return true;
+		}
+		return false;
+	}
+	
+	//test si un joueur est pat
+	public boolean testPat()
+	{
+		boolean estPat = true;
+
+		for (int i = 0; i < 8; i++)
+		{
+			for (Piece t : this.getPlateau()[i])
+			{
+				if (t instanceof Roi)
+				{
+					if (!this.deplacementRoiPossible((Roi) t).isEmpty())
+					{
+						estPat = false;
+					}
+				}
+				for (Case ca : t.CasesPossible())
+				{
+					if (this.testDep(t, ca))
+					{
+						estPat = false;
+					}
+				}
+			}
+		}
+		return estPat;
+	}
+	
 	// effectue un deplacement 
 	public void deplacement(Piece p, Case c)
 	{
