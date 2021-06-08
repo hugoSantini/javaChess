@@ -68,16 +68,19 @@ public class Piece {
 		return true;
 	}
 	
-	
-	public String toString() 
+	public String toString()
 	{
-		if (this.couleur)
-		{
-			return this.Nom + "B";
+		String c = this.getClass().getSimpleName();
+		c = c.substring(0,1);
+		String cou;
+		if (this.getCouleur()) {
+			cou = "B";
 		}
-		else
-		{
-			return this.Nom + "N";
-		}
+		else {
+			cou = "N";
+			}
+
+		return c + cou;
 	}
+
 }

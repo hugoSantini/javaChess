@@ -148,7 +148,6 @@ public class Pion extends Piece
 		
 		if (CaseP.isEmpty())
 		{
-			System.out.println("Le Pion " + this.getCase().getLigne() + "," + this.getCase().getColonne() + " ne peut pas se déplacer");
 			return CaseP;
 		}
 		return CaseP;

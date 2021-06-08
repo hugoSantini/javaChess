@@ -116,35 +116,41 @@ public class Plateau {
 	}
 	
 	//test si roi en echec et piece qui veut être jouer pas le roi
-	//test si deplacement de p permet de bloquer un échecs (true = blocage possible)
-	public boolean bloqueEchec(Piece p, Case c)
-	{
-		boolean peutBloquer = true;
-		
-		if (this.getRoi(p.getCouleur()).getEstEchec() && !(p instanceof Roi)) 
-		{ 
-			this.setPiece(c,p);
-			for (int j = 0; j < 8; j++)
-			{
-				for (Piece piece : this.getPlateau()[j])
-				{
-					if (piece != null)
-					{
-						if (piece.getCouleur() != p.getCouleur())
-						{
-							if (piece.CasesPossible().contains(this.getRoi(p.getCouleur()).getCase()))
-							{
-								peutBloquer = false;
-								System.out.println("Votre roi est attaqué par : " + piece);
-							}
-						}
-					}
-				}
-			}
-			this.setPiece(c, null);
-		}
-		return peutBloquer;
-	}
+    //test si deplacement de p permet de bloquer un échecs (true = blocage possible)
+    public ArrayList<Case> bloqueEchec(Piece p)
+    {
+        ArrayList<Case> peutBloquer = new ArrayList<Case>();
+
+        if (this.getRoi(p.getCouleur()).getEstEchec() && !(p instanceof Roi)) 
+        { 
+            for (Case ca : p.CasesPossible())
+            {
+                if (this.testDep(p, ca))
+                {
+                    this.setPiece(ca,p);
+                    for (int j = 0; j < 8; j++)
+                    {
+                        for (Piece piece : this.getPlateau()[j])
+                        {
+                            if (piece != null)
+                            {
+                                if (piece.getCouleur() != p.getCouleur())
+                                {
+                                    if (piece.CasesPossible().contains(this.getRoi(p.getCouleur()).getCase()))
+                                    {
+                                        peutBloquer.add(ca);
+                                        System.out.println("Votre roi est attaqué par : " + piece);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    this.setPiece(ca, null);
+                }
+            }
+        }
+        return peutBloquer;
+    }
 	
 	// test si une piece de couleur opposée à celle en paramètre met en échecs (true = échecs)
 	public boolean estEchec(boolean couleur)
@@ -185,7 +191,7 @@ public class Plateau {
 					{
 						if (t.deplacementOk(c) && c.getColonne() != t.getCase().getColonne())
 						{
-							System.out.println("Deplacement du roi en : " + c.getLigne() + "," + c.getColonne() + " impossible, la case est controléee par : " + t + "\n");
+							System.out.println(" en : " + c.getLigne() + "," + c.getColonne() + " impossible, la case est controléee par : " + t + "\n");
 							protege = true;
 						}
 					}
@@ -194,7 +200,6 @@ public class Plateau {
 				{
 					if (t.CasesPossible().contains(c))
 					{
-						System.out.println("Deplacement du roi en : " + c.getLigne() + "," + c.getColonne() + " impossible, la case est controlée par : " + t + "\n");
 						protege = true;
 					}
 				}
@@ -210,7 +215,7 @@ public class Plateau {
 		ArrayList<Case> caseRoi = new ArrayList<Case>();
 		for (Case c : p.CasesPossible())
 		{
-			if (!this.deplacementRoi(p, c))
+			if (!this.deplacementRoi(p, c) && testDep(p, c))
 			{
 				caseRoi.add(c);
 			}
@@ -219,18 +224,32 @@ public class Plateau {
 	}
 	
 	//test si un joeur est en échecs et mat
-	public boolean testMat()
-	{
-		if (this.deplacementRoiPossible(this.getRoi(true)).isEmpty() && this.getRoi(true).getEstEchec())
-		{
-			return true;
-		}
-		else if (this.deplacementRoiPossible(this.getRoi(false)).isEmpty() && this.getRoi(false).getEstEchec())
-		{
-			return true;
-		}
-		return false;
-	}
+	//test si un joeur est en échecs et mat
+    public boolean testMat()
+    {
+        boolean bloque = false;
+
+        for (int i = 0; i < 8; i++)
+        {
+            for (Piece t : this.getPlateau()[i])
+            {
+                if (!this.bloqueEchec(t).isEmpty())
+                {
+                    bloque = true;
+                }
+            }
+        }
+
+        if (this.deplacementRoiPossible(this.getRoi(true)).isEmpty() && this.getRoi(true).getEstEchec() && !bloque)
+        {
+            return true;
+        }
+        else if (this.deplacementRoiPossible(this.getRoi(false)).isEmpty() && this.getRoi(false).getEstEchec() && !bloque)
+        {
+            return true;
+        }
+        return false;
+    }
 	
 	//test si un joueur est pat
 	public boolean testPat()
@@ -239,7 +258,7 @@ public class Plateau {
 
 		for (int i = 0; i < 8; i++)
 		{
-			for (Piece t : this.getPlateau()[i])
+			for (Piece t : this.getPlateau()[i])	
 			{
 				if (t instanceof Roi)
 				{
@@ -248,11 +267,13 @@ public class Plateau {
 						estPat = false;
 					}
 				}
-				for (Case ca : t.CasesPossible())
-				{
-					if (this.testDep(t, ca))
+				if (t != null) {
+					for (Case ca : t.CasesPossible())
 					{
-						estPat = false;
+						if (this.testDep(t, ca))
+						{
+							estPat = false;
+						}
 					}
 				}
 			}
@@ -289,7 +310,19 @@ public class Plateau {
 		}
 		return false;
 	}
-	
+	//Renvoie une liste des cases possible pour la pièce passée en paramètre (tenant compte des pièces adverses)
+    public ArrayList<Case> deplacementPiecePossible(Piece p)
+    {
+        ArrayList<Case> casep = new ArrayList<Case>();
+        for (Case c : p.CasesPossible())
+        {
+            if (this.testDep(p, c))
+            {
+                casep.add(c);
+            }
+        }
+        return casep;
+    }
 	public void promotion(Piece p, Case c)
 	{
 		if (p instanceof Pion)
@@ -323,14 +356,14 @@ public class Plateau {
 			}
 		}
 	}
-		
+	
+	
 	public String toString()
 	{
 		String str = "";
 		for(int i=0 ; i < 8; i+=1)
 		{
-			//str += String.valueOf(9-(i+1))+ "  "; = vrai ligne 
-			str += String.valueOf(i)+ "  "; // visuel pour coordonnées
+			str += String.valueOf(9-(i+1))+ "  ";
 			for(int j=0 ; j < 8; j+=1)
 			{
 				if(this.plateau[i][j] != null)
@@ -344,8 +377,7 @@ public class Plateau {
 			}
 			str+="\n";
 		}
-		//str += "\n   A  B  C  D  E  F  G  H"; = vrai ligne
-		str += "\n   0  1  2  3  4  5  6  7\n"; //visuel coordonnées
+		str += "\n   A  B  C  D  E  F  G  H";
 		return str;
 	}
 	
@@ -407,7 +439,8 @@ public class Plateau {
 			setPiece(c[7][5], new Fous(true));
 			setPiece(c[7][6], new Cavalier(true));
 			setPiece(c[7][7], new Tour(true));
-			
-			setPiece(c[2][2], new Pion(true));
+	}
+	public boolean matOrPatTest() {
+		return this.testPat() || this.testMat();
 	}
 }
