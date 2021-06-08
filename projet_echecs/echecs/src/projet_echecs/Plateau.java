@@ -84,11 +84,12 @@ public class Plateau {
 		this.setPiece(p.getCase(), new Fous(p.getCouleur()));
 	}
 	
+	//test si la piece passée en paramêtre est clouée (true = clouée)
 	public boolean clouage(Piece p)
 	{
 		boolean clouage = false;
 		if (! (p instanceof Roi) )
-		{ //test si la piece est clouée
+		{ 
 			this.setPiece(p.getCase(), null);
 			for (int j = 0; j < 8; j++)
 			{
@@ -113,12 +114,14 @@ public class Plateau {
 		return clouage;
 	}
 	
+	//test si roi en echec et piece qui veut être jouer pas le roi
+	//test si deplacement de p permet de bloquer un échecs (true = blocage possible)
 	public boolean bloqueEchec(Piece p, Case c)
 	{
 		boolean peutBloquer = true;
 		
 		if (this.getRoi(p.getCouleur()).getEstEchec() && !(p instanceof Roi)) 
-		{ //test si roi en echec et piece qui veut etre jouer pas le roi
+		{ 
 			this.setPiece(c,p);
 			for (int j = 0; j < 8; j++)
 			{
@@ -142,10 +145,11 @@ public class Plateau {
 		return peutBloquer;
 	}
 	
+	// test si une piece de couleur opposée à celle en paramètre met en échecs (true = échecs)
 	public boolean estEchec(boolean couleur)
 	{	
 		for (int i = 0; i < 8; i++)
-		{ // test pour les decouvertes
+		{ 
 			for (Piece t : this.getPlateau()[i])
 			{
 				if (t != null)
@@ -164,10 +168,12 @@ public class Plateau {
 		return this.getRoi(couleur).getEstEchec();
 	}
 	
+	
+	//contrôle que la case où le roi va n'est pas controlée par une pièce adverse (true = case protégée)
 	public boolean deplacementRoi(Roi p, Case c)
 	{
 		boolean protege = false;
-		 //controle que la case ou le roi va n'est pas controlée par une pièce adverse
+		
 		for (int i = 0; i < 8; i++)
 		{
 			for (Piece t : this.getPlateau()[i])
@@ -196,6 +202,7 @@ public class Plateau {
 		return protege;
 	}
 	
+	// effectue un deplacement 
 	public void deplacement(Piece p, Case c)
 	{
 		this.setPiece(p.getCase(),null);
@@ -204,12 +211,14 @@ public class Plateau {
 		this.getRoi(p.getCouleur()).setEstEchec(false);
 	}
 	
+	
+	//controle si la case destination est valide et est occupée (true = dep possible)
 	public boolean testDep(Piece p, Case c)
 	{
 		if (p.CasesPossible().contains(c))
 		{
 			if (c.getPresence())
-			{//controle si la case destination est occupée
+			{
 				if (this.getPiece(c).getCouleur() != p.getCouleur())
 				{
 					return true;
