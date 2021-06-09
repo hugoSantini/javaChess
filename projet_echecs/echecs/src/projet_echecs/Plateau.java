@@ -327,7 +327,7 @@ public class Plateau implements Serializable {
     }
 	
 	//test si un joueur est pat
-	public boolean testPat()
+	public boolean testPat(boolean couleur)
 	{
 		boolean estPatBlanc = true;
 		boolean estPatNoir = true;
@@ -374,12 +374,25 @@ public class Plateau implements Serializable {
 						}
 					}
 				}
+		
 			}
-		if ((estPatBlanc || estPatNoir) && ((!this.estEchec(true) && !this.estEchec(false))))
+		if (couleur)
 		{
-			System.out.print("Pat!");
+			if  (estPatBlanc && !this.estEchec(couleur))
+			{
+				System.out.println("Pat!");
+				return true;
+			}
 		}
-		return (estPatBlanc || estPatNoir) && (!this.estEchec(true) && !this.estEchec(false));
+		else
+		{
+			if  (estPatNoir && !this.estEchec(couleur))
+			{
+				System.out.println("Pat!");
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	// effectue un deplacement 
@@ -518,7 +531,6 @@ public class Plateau implements Serializable {
 		}
 		
 		
-		
 		setPiece(c[0][0], new Tour(false));
 		setPiece(c[0][1], new Cavalier(false));
 		setPiece(c[0][2], new Fous(false));
@@ -542,7 +554,6 @@ public class Plateau implements Serializable {
 			setPiece(c[7][5], new Fous(true));
 			setPiece(c[7][6], new Cavalier(true));
 			setPiece(c[7][7], new Tour(true));
-			
 		
 		// set up pat
 		/*
@@ -553,10 +564,11 @@ public class Plateau implements Serializable {
 		
 		setPiece(c[6][4], new Roi(true));
 		*/
+	
 	}
 	
 	
-	public boolean matOrPatTest() {
-		return this.testPat() || this.testMat();
+	public boolean matOrPatTest(boolean couleur) {
+		return this.testPat(couleur) || this.testMat();
 	}
 }

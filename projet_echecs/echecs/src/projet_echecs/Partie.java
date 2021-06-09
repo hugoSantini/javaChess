@@ -144,7 +144,7 @@ public class Partie {
 		try{
 			this.menuLancementPartie();
 			this.affichage();
-			while(!this.getPlateau().matOrPatTest())
+			while(!this.getPlateau().matOrPatTest(this.colorToPlay()))
 			{
 				this.tourJeu();
 				getPlateau().estEchec(colorToPlay());
@@ -237,25 +237,24 @@ public class Partie {
 						{
 							if (this.getPlateau().peutBloquer(p, c2))
 							{
-								System.out.println("ok");
 								return !this.getPlateau().clouage(p);
 							}
 						}
 					}
 					else
 					{
+						if (p instanceof Roi)
+						{
+							return this.getPlateau().deplacementRoiPossible((Roi) p).contains(c2);
+						}
 						if (this.getPlateau().clouage(p))
 						{
-							if (this.getPlateau().testBlocageClouage(p, c2))
-							{
-								return true;
-							}	
-							else
-							{
-								return false;
-							}
+							return this.getPlateau().testBlocageClouage(p, c2);
 						}
-						return true;
+						else
+						{
+							return true;
+						}
 					}
 				}
 			}
