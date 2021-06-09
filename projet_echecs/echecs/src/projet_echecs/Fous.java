@@ -4,16 +4,27 @@ import java.util.ArrayList;
 
 public class Fous extends Piece{
 	
-
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
+	/* -------------------------------------
+	 *  Constructeur
+	 ------------------------------------- */
+	/**
+	 * Methode constructeur de la class Fous.
+	 * @param couleur Boolean qui traduit la couleur de la piece (True = Blanc, False = Noir).
+	 */
 	public Fous(boolean couleur) {
-		super(couleur, "F");
+		super(couleur);
 	}
-		
+	
+	/* -------------------------------------
+	 *  Méthode de classe
+	 ------------------------------------- */
+	/**
+	 * Dis si le coup est conforme au déplacement de la pièce.
+	 * @param c La case cible du Fous courant.
+	 * @return Un boolean qui traduit la possibilité du coup.
+	 */
 	public boolean deplacementOk(Case c)
 	{
 	    for (int i = 0; i < 8; i++)
@@ -37,7 +48,11 @@ public class Fous extends Piece{
 	    }
 	    return false;
 	}
-	
+	/**
+	 * Dis si le coup est conforme au déplacement de la pièce et prend en compte les colisions avec les autres pièces du plateau.
+	 * @param c La case cible du Fou courant.
+	 * @return Un boolean qui traduit la possibilité du coup avec prise en compte des colisions.
+	 */
 	public boolean deplacementPossible(Case c)
 	{
 		if(this.deplacementOk(c))
@@ -97,7 +112,10 @@ public class Fous extends Piece{
 		return false;
 	}
 	
-	//Renvoie la liste des cases repondant a deplacement possible
+	/**
+	 * Fait une liste des cases d'arrivés possibles du Fou.
+	 * @return Renvoie la liste des cases repondant à déplacement possible.
+	 */
 	public ArrayList<Case> CasesPossible()
 	{
 		ArrayList<Case> CaseP = new ArrayList<Case>();

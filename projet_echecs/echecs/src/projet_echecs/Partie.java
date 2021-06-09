@@ -1,4 +1,3 @@
-
 //*
 
 
@@ -140,6 +139,9 @@ public class Partie {
 	/* -------------------------------------
 	 *  Services instance publics
 	 ------------------------------------- */
+	/**
+	 * Methode permettant de lancer une partie.
+	 */
 	public void lancerPartie() {
 		try{
 			this.menuLancementPartie();

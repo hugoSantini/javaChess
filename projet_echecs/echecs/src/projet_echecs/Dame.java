@@ -4,16 +4,28 @@ import java.util.ArrayList;
 
 public class Dame extends Piece
 {
-	/**
-	 * 
-	 */
+	
 	private static final long serialVersionUID = 1L;
-
+	/* -------------------------------------
+	 *  Constructeur
+	 ------------------------------------- */
+	/**
+	 * Methode constructeur de la class Dame.
+	 * @param couleur Boolean qui traduit la couleur de la piece (True = Blanc, False = Noir).
+	 */
 	public Dame(boolean couleur)
 	{
-		super(couleur, "D");
+		super(couleur);
 	}
 	
+	/* -------------------------------------
+	 *  Méthode de classe
+	 ------------------------------------- */
+	/**
+	 * Dis si le coup est conforme au déplacement de la pièce.
+	 * @param c La case cible de la Dame courante.
+	 * @return Un boolean qui traduit la possibilité du coup.
+	 */
 	public boolean deplacementOk(Case c)
 	{
     	if(c.getLigne() == this.getCase().getLigne() || c.getColonne() == this.getCase().getColonne())
@@ -41,7 +53,11 @@ public class Dame extends Piece
 	    }
     	return false;
     }
-	
+	/**
+	 * Dis si le coup est conforme au déplacement de la pièce et prend en compte les colisions avec les autres pièces du plateau.
+	 * @param c La case cible de la Dame courante.
+	 * @return Un boolean qui traduit la possibilité du coup avec prise en compte des colisions.
+	 */
 	public boolean deplacementPossible(Case c)
 	{
 		if (this.deplacementOk(c))
@@ -152,7 +168,10 @@ public class Dame extends Piece
 		return false;
 	}
 	
-	//Renvoie la liste des cases repondant a deplacement possible
+	/**
+	 * Fait une liste des cases d'arrivés possibles de la Dame.
+	 * @return Renvoie la liste des cases repondant à déplacement possible.
+	 */
 	public ArrayList<Case> CasesPossible()
 	{
 		ArrayList<Case> CaseP = new ArrayList<Case>();

@@ -3,17 +3,29 @@ package projet_echecs;
 import java.util.ArrayList;
 
 public class Cavalier extends Piece {
-
-	/**
-	 * 
-	 */
+	
 	private static final long serialVersionUID = 1L;
 
+	/* -------------------------------------
+	 *  Constructeur
+	 ------------------------------------- */
+	/**
+	 * Methode constructeur de la class Cavalier.
+	 * @param couleur Boolean qui traduit la couleur de la piece (True = Blanc, False = Noir).
+	 */
 	public Cavalier(boolean couleur) 
 	{
-		super(couleur, "C");
+		super(couleur);
 	}
 	
+	/* -------------------------------------
+	 *  Méthode de classe
+	 ------------------------------------- */
+	/**
+	 * Dis si le coup est conforme au déplacement de la pièce.
+	 * @param c La case cible du Cavalier courant.
+	 * @return Un boolean qui traduit la possibilité du coup.
+	 */
 	public boolean deplacementOk(Case c)
 	{
 		if ((c.getLigne() == this.getCase().getLigne() + 2 || c.getLigne() == this.getCase().getLigne() -2) && (c.getColonne() == this.getCase().getColonne() + 1 || c.getColonne() == this.getCase().getColonne() - 1 ))
@@ -26,13 +38,20 @@ public class Cavalier extends Piece {
 		}
 	    return false;
 	}
-	
+	/**
+	 * Dis si le coup est conforme au déplacement de la pièce et prend en compte les colisions avec les autres pièces du plateau.
+	 * @param c La case cible du Cavalier courant.
+	 * @return Un boolean qui traduit la possibilité du coup avec prise en compte des colisions.
+	 */
 	public boolean deplacementPossible(Case c)
 	{
 		return this.deplacementOk(c);
 	}
 	
-	//Renvoie la liste des cases repondant a deplacement possible
+	/**
+	 * Fait une liste des cases d'arrivés possibles du Cavalier.
+	 * @return Renvoie la liste des cases repondant à déplacement possible.
+	 */
 	public ArrayList<Case> CasesPossible()
 	{
 		ArrayList<Case> CaseP = new ArrayList<Case>();

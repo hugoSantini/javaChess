@@ -4,18 +4,23 @@ import java.util.ArrayList;
 
 public class Pion extends Piece
 {
-	/**
-	 * 
-	 */
+
+	/* -------------------------------------
+	 *  Variable d'instance
+	 ------------------------------------- */
 	private static final long serialVersionUID = 1L;
 	private boolean peutPrendre;
 
+	/**
+	 * Constructeur de la class Pion.
+	 * @param couleur Boolean qui traduit la couleur de la piece (True = Blanc, False = Noir).
+	 */
 	public Pion(boolean couleur) {
-		super(couleur, "P");
+		super(couleur);
 		this.peutPrendre = false;
 	}
 	
-	public void setPeutPrendre()
+	 private void setPeutPrendre()
 	{
 		this.peutPrendre = false;
 		for (Case c : this.CasesPossible())
@@ -27,16 +32,28 @@ public class Pion extends Piece
 		}
 	}
 	
-	public void setPeutPrendre(boolean b)
+	/* -------------------------------------
+	 *  Accesseurs
+	 ------------------------------------- */
+
+	private void setPeutPrendre(boolean b)
 	{
 		this.peutPrendre = b;
 	}
 	
-	public boolean getPeutPrendre()
+	private boolean getPeutPrendre()
 	{
 		return this.peutPrendre;
 	}
 	
+	/* -------------------------------------
+	 *  Méthode de classe
+	 ------------------------------------- */
+	/**
+	 * Dis si le coup est conforme au déplacement de la pièce.
+	 * @param c La case cible du Pion courant.
+	 * @return Un boolean qui traduit la possibilité du coup.
+	 */
 	public boolean deplacementOk(Case c)
 	{
 		if(!this.getCouleur())
@@ -81,6 +98,11 @@ public class Pion extends Piece
 		}
 	}
 	
+	/**
+	 * Dis si le coup est conforme au déplacement de la pièce et prend en compte les colisions avec les autres pièces du plateau.
+	 * @param c La case cible du Pion courant.
+	 * @return Un boolean qui traduit la possibilité du coup avec prise en compte des colisions.
+	 */
 	public boolean deplacementPossible(Case c)
 	{
 		if (this.deplacementOk(c)) 
@@ -134,7 +156,10 @@ public class Pion extends Piece
 		return false;
 	}
 	
-	//Renvoie la liste des cases repondant a deplacement possible
+	/**
+	 * Fait une liste des cases d'arrivés possibles du Pion.
+	 * @return Renvoie la liste des cases repondant à déplacement possible.
+	 */
 	public ArrayList<Case> CasesPossible()
 	{
 		ArrayList<Case> CaseP = new ArrayList<Case>();

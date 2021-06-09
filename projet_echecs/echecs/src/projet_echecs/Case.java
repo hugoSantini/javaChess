@@ -4,18 +4,37 @@ import java.io.Serializable;
 
 public class Case implements Serializable{
 	
-	/**
-	 * 
-	 */
+
+	/* -------------------------------------
+	 *  Variable d'instance
+	 ------------------------------------- */
+	
 	private static final long serialVersionUID = 1L;
 	private int Ligne;
 	private int Colonne;
-	private static Case[][] Cases = new Case[8][8];
 	private boolean presence;
 	
+	/* -------------------------------------
+	 *  Constante de classe
+	 ------------------------------------- */
+	
+	private static Case[][] Cases = new Case[8][8];
+
+	/* -------------------------------------
+	 *  Constructeur
+	 ------------------------------------- */
+	/**
+	 * Methode constructeur vide de la class Case.
+	 */
 	public Case()
 	{
 	}
+	
+	/**
+	 * Methode constructeur de la class Case.
+	 * @param L Int désignant la Ligne.
+	 * @param C Int désignant la colonne.
+	 */
 	
 	public Case(int L, int C)
 	{
@@ -26,44 +45,83 @@ public class Case implements Serializable{
 		Cases[L][C] = this;
 	}
 	
+	/**
+	 * Methode constructeur par copie de la class Case.
+	 * @param c Case a copier.
+	 */
+	
 	public Case(Case c)
 	{
 		this.Ligne = c.getLigne();
 		this.Colonne = c.getColonne();
 	}
 	
+	/* -------------------------------------
+	 *  Accesseurs
+	 ------------------------------------- */
+	
+	/**
+	 * Getter d'une case dans 'Cases'.
+	 * @param L Ligne de la case.
+	 * @param C Colonne de la case.
+	 * @return La case voulue.
+	 */
+	
 	public static Case getCase(int L, int C)
 	{
 		return Cases[L][C];
 	}
+	/**
+	 * Getter de la ligne d'une case.
+	 * @return La ligne de la case courante.
+	 */
 
 	public int getLigne() {
 		return this.Ligne;
 	}
 
-	public void setLigne(int ligne) {
+	private void setLigne(int ligne) {
 		this.Ligne = ligne;
 	}
-
+	
+	/**
+	 * Getter de la colonne d'une case.
+	 * @return La colonne de la case courante.
+	 */
+	
 	public int getColonne() {
 		return this.Colonne;
 	}	
 
-	public void setColonne(int colonne) {
+	private void setColonne(int colonne) {
 		this.Colonne = colonne;
 	}
+	
+	/**
+	 * Getter de la présence d'une pièce sur une case.
+	 * @return Un boolean traduisant la présence d'une sur la case courante.
+	 */
 	
 	public boolean getPresence()
 	{
 		return this.presence;
 	}
 	
+	/**
+	 * Setter de la présence d'une pièce sur une case.
+	 * @param b Un boolean traduisant la présence d'une sur la case courante.
+	 */
+	
 	public void setPresence(boolean b)
 	{
 		this.presence = b;
 	}
 	
-	public char getNomColonne()
+	/* -------------------------------------
+	 *  Méthode de classe
+	 ------------------------------------- */
+	
+	private char getNomColonne()
 	{
 		switch(this.Colonne)
 		{
@@ -78,7 +136,7 @@ public class Case implements Serializable{
 			default : return 'O' ;
 		}
 	}
-	public int getNomLigne() {
+	private int getNomLigne() {
 		switch(this.Ligne)
 		{
 			case 0 : return 8 ;
@@ -92,6 +150,11 @@ public class Case implements Serializable{
 			default : return 'O' ;
 		}
 	}
+	
+	/**
+	 * toString de la class Case.
+	 * @param Un String de la ligne et colonne de la case courante.
+	 */
 
 	public String toString()
 	{

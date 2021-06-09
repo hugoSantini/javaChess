@@ -6,34 +6,52 @@ import java.util.Scanner;
 
 public class Plateau implements Serializable {
 	
-	/**
-	 * 
-	 */
+	/* -------------------------------------
+	 *  Variable d'instance
+	 ------------------------------------- */
+	
 	private static final long serialVersionUID = 1L;
 	private Piece[][] plateau;
 	
+	/* -------------------------------------
+	 *  Constructeur
+	 ------------------------------------- */
+	/**
+	 * Methode constructeur de la class Plateau.
+	 */
 	public Plateau()
 	{
 		this.plateau = new Piece[8][8];
 		this.initialize();
 	}
 	
-	public Piece[][] getPlateau()
+	/* -------------------------------------
+	 *  Accesseurs
+	 ------------------------------------- */
+	
+	private Piece[][] getPlateau()
 	{
 		return this.plateau;
 	}
-	
+	/**
+	 * Getter d'une pièce dans plateau.
+	 * @param c Case de la piece en question.
+	 */
 	public Piece getPiece(Case c)
 	{
 		return this.plateau[c.getLigne()][c.getColonne()];
 	}
-	
+	/**
+	 * Getter d'une piece dans plateau.
+	 * @param x Abscisse de la case de la pièce en question.
+	 * @param y Ordonnée de la case de la piece en question.
+	 */
 	public Piece getPiece(int x, int y)
 	{
 			return this.plateau[x][y];
 	}
 	
-	public Roi getRoi(boolean couleur)
+	private Roi getRoi(boolean couleur)
 	{
 		for (int i = 0; i < 8; i++)
 		{
@@ -56,7 +74,7 @@ public class Plateau implements Serializable {
 		return null;
 	}
 	
-	public void setPiece(Case c, Piece p)
+	private void setPiece(Case c, Piece p)
 	{
 		this.plateau[c.getLigne()][c.getColonne()] = p;
 		if (p != null)
@@ -70,27 +88,36 @@ public class Plateau implements Serializable {
 		}
 	}
 	
-	public void promotionDame(Piece p)
+	/* -------------------------------------
+	 *  Méthode de classe
+	 ------------------------------------- */
+	
+	private void promotionDame(Piece p)
 	{
 		p = new Dame(p.getCouleur());
 	}
 	
-	public void promotionTour(Piece p)
+	private void promotionTour(Piece p)
 	{
 		this.setPiece(p.getCase(), new Tour(p.getCouleur()));
 	}
 	
-	public void promotionCavalier(Piece p)
+	private void promotionCavalier(Piece p)
 	{
 		p = new Cavalier(p.getCouleur());
 	}
 	
-	public void promotionFou(Piece p)
+	private void promotionFou(Piece p)
 	{
 		this.setPiece(p.getCase(), new Fous(p.getCouleur()));
 	}
 	
 	//test si la piece passée en paramêtre est clouée (true = clouée)
+	/**
+	 * Test si la piece passée en paramêtre est clouée.
+	 * @param p Pièce sujète au test de clouage.
+	 * @retrun Un boolean traduisant le clouage d'une pièce.
+	 */
 	public boolean clouage(Piece p)
 	{
 		boolean clouage = false;
@@ -122,7 +149,12 @@ public class Plateau implements Serializable {
 		}
 		return clouage;
 	}
-	
+	/**
+	 * Test si la case d'arrivé d'un pièce clouée est légale. (Exemple de cas d'utilisation : RoiB en a1, DameN en h8 et un fouB en b2, le fou veux allez en e5.)
+	 * @param p Pièce sujète au test de clouage.
+	 * @param c Case d'arrivé a tester.
+	 * @retrun Un boolean traduisant la légaliter du coup.
+	 */
 	public boolean testBlocageClouage(Piece p, Case c)
 	{
 		Piece pieceC = null;
@@ -160,9 +192,13 @@ public class Plateau implements Serializable {
 		return false;
 	}
 	
-	//test si roi en echec et piece qui veut être jouer pas le roi
-    //test si deplacement de p permet de bloquer un échecs (true = blocage possible)
-    public ArrayList<Case> bloqueEchec(Piece p)
+	/**
+     * Liste les deplacement de p permet de bloquer un échecs (Déplacement d'une autre pièce que le roi, tout de même permetant de sortir d'un echec)
+	 * @param p Piece dont on veux tester les coups.
+	 * @retrun Une ArrayList listant tout coups.
+	 */
+	
+    private ArrayList<Case> bloqueEchec(Piece p)
     {
         ArrayList<Case> caseBloquer = new ArrayList<Case>();
 
@@ -180,7 +216,13 @@ public class Plateau implements Serializable {
         return caseBloquer;
     }
     
-    // test si le déplacement de p en c bloque un échecs
+	/**
+     * Test si le déplacement d'une pièce bloque un échec.
+	 * @param p Piece dont on veux tester un coup.
+	 * @param c Case d'arriver du coup.
+	 * @retrun Un boolean traduisant le bloquage d'un échec.
+	 */
+    
     public boolean peutBloquer(Piece p, Case c)
     {
     	boolean peutBloquer = true;
@@ -218,7 +260,11 @@ public class Plateau implements Serializable {
         return peutBloquer;
     }
 	
-	// test si une piece de couleur opposée à celle en paramètre met en échecs (true = échecs)
+	/**
+     * Test si une piece de couleur opposée à celle en paramètre met en échec.
+	 * @param couleur Un boolean tradisant de la couleur qui met en échec.
+	 * @retrun Un boolean traduisant un état d'échec.
+	 */
 	public boolean estEchec(boolean couleur)
 	{	
 		for (int i = 0; i < 8; i++)
@@ -241,8 +287,13 @@ public class Plateau implements Serializable {
 	}
 	
 	
-	//contrôle que la case où le roi va n'est pas controlée par une pièce adverse (true = case protégée)
-	public boolean deplacementRoi(Roi p, Case c)
+	/**
+     * Contrôle que la case où le roi va n'est pas controlée par une pièce adverse.
+	 * @param p Roi que l'on veux tester.
+	 * @param c Case à tester.
+	 * @retrun Un boolean traduisant le controle de la case par une pièce adverse. (True = controlée)
+	 */
+	private boolean deplacementRoi(Roi p, Case c)
 	{
 		boolean protege = false;
 		
@@ -256,7 +307,6 @@ public class Plateau implements Serializable {
 					{
 						if (t.deplacementOk(c) && c.getColonne() != t.getCase().getColonne())
 						{
-							//System.out.println("Déplacement impossible, la case est controléee par : " + t + "\n");
 							protege = true;
 						}
 					}
@@ -267,7 +317,6 @@ public class Plateau implements Serializable {
 					{
 						if (t.CasesPossible().contains(c))
 						{
-							//System.out.println("Déplacement impossible, la case est controléee par : " + t + "\n");
 							protege = true;
 						}
 					}
@@ -278,7 +327,12 @@ public class Plateau implements Serializable {
 	}
 	
 	
-	//Renvoie une liste des cases possible pour le roi passé en paramètre (tenant compte des pièces adverses)
+	/**
+     * Donne une liste des cases possible pour le roi passé en paramètre.
+	 * @param p Roi que l'on veux tester.
+	 * @retrun Une ArrayList de Case possible pour le roi. 
+	 */
+	
 	public ArrayList<Case> deplacementRoiPossible(Roi p)
 	{
 		ArrayList<Case> caseRoi = new ArrayList<Case>();
@@ -292,9 +346,8 @@ public class Plateau implements Serializable {
 		return caseRoi;
 	}
 	
-	//test si un joeur est en échecs et mat
-	//test si un joeur est en échecs et mat
-    public boolean testMat()
+	//Test si un joeur est en échecs et mat
+    private boolean testMat()
     {
         boolean bloque = false;
 
@@ -308,7 +361,6 @@ public class Plateau implements Serializable {
 	                {
 	                    bloque = true;
 	                }
-	                //System.out.println(t + ":" + this.bloqueEchec(t));
             	}
             }
         }
@@ -327,7 +379,7 @@ public class Plateau implements Serializable {
     }
 	
 	//test si un joueur est pat
-	public boolean testPat(boolean couleur)
+    public boolean testPat(boolean couleur)
 	{
 		boolean estPatBlanc = true;
 		boolean estPatNoir = true;
@@ -394,8 +446,12 @@ public class Plateau implements Serializable {
 		}
 		return false;
 	}
-	
-	// effectue un deplacement 
+
+	/**
+     * Effectue le déplacement d'une pièce dans plateau.
+	 * @param p Piece que l'on veux déplacer.
+	 * @param c Case cible du déplacement.
+	 */
 	public void deplacement(Piece p, Case c)
 	{
 		this.setPiece(p.getCase(),null);
@@ -405,7 +461,13 @@ public class Plateau implements Serializable {
 	}
 	
 	
-	//controle si la case destination est valide et est occupée (true = dep possible)
+	/**
+     * Test la légalité d'un déplacement dans le plateau.
+	 * @param p Piece que l'on veux déplacer.
+	 * @param c Case cible du déplacement.
+	 * @retrun Un boolean traduisant la légalité du coup testé.
+	 * 
+	 */
 	public boolean testDep(Piece p, Case c)
 	{
 		if (p.CasesPossible().contains(c))
@@ -426,7 +488,7 @@ public class Plateau implements Serializable {
 	}
 	
 	//Renvoie une liste des cases possible pour la pièce passée en paramètre (tenant compte des pièces adverses)
-    public ArrayList<Case> deplacementPiecePossible(Piece p)
+    private ArrayList<Case> deplacementPiecePossible(Piece p)
     {
         ArrayList<Case> casep = new ArrayList<Case>();
         for (Case c : p.CasesPossible())
@@ -439,7 +501,7 @@ public class Plateau implements Serializable {
         return casep;
     }
     
-	public void promotion(Piece p, Case c)
+	private void promotion(Piece p, Case c)
 	{
 		if (p instanceof Pion)
 		{ // test pour promotion
@@ -473,7 +535,11 @@ public class Plateau implements Serializable {
 		}
 	}
 	
-	
+	/**
+     * Renvoie le plateau de pièces.
+	 * @retrun Un String du plateau.
+	 * 
+	 */
 	public String toString()
 	{
 		String str = "";
@@ -497,7 +563,7 @@ public class Plateau implements Serializable {
 		return str;
 	}
 	
-	public void viderPlateau()
+	private void viderPlateau()
 	{
 		for(int i=0 ; i < 8; i+=1)
 		{
@@ -509,7 +575,7 @@ public class Plateau implements Serializable {
 	}
 
 	
-	public void initialize()
+	private void initialize()
 	{
 		Case[][] c = new Case[8][8];
 		
@@ -529,6 +595,7 @@ public class Plateau implements Serializable {
 				plateau[i][j] = null;
 			}
 		}
+		
 		
 		
 		setPiece(c[0][0], new Tour(false));
@@ -554,6 +621,7 @@ public class Plateau implements Serializable {
 			setPiece(c[7][5], new Fous(true));
 			setPiece(c[7][6], new Cavalier(true));
 			setPiece(c[7][7], new Tour(true));
+			
 		
 		// set up pat
 		/*
@@ -564,10 +632,13 @@ public class Plateau implements Serializable {
 		
 		setPiece(c[6][4], new Roi(true));
 		*/
-	
 	}
 	
-	
+	/**
+     * Test si le plateau à un état de mat ou de pat.
+	 * @retrun Un boolean traduisant l'état de mat ou de pat d'un des joueur.
+	 * 
+	 */
 	public boolean matOrPatTest(boolean couleur) {
 		return this.testPat(couleur) || this.testMat();
 	}

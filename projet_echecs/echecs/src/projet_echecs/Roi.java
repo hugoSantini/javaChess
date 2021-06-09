@@ -8,23 +8,52 @@ public class Roi extends Piece
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	/* -------------------------------------
+	 *  Variable d'instance
+	 ------------------------------------- */
+	
 	private boolean estEchec;
-
+	
+	/* -------------------------------------
+	 *  Constructeur
+	 ------------------------------------- */
+	/**
+	 * Methode constructeur de la class Roi.
+	 * @param couleur Boolean qui traduit la couleur de la piece (True = Blanc, False = Noir).
+	 */
 	public Roi(boolean couleur)
 	{
-		super(couleur, "R");
+		super(couleur);
 	}
 	
+	/* -------------------------------------
+	 *  Accesseurs
+	 ------------------------------------- */
+	/**
+	 * Methode qui renvoie si un roi est en echec ou pas.
+	 * @return Un boolean traduisant l'état d'echec.
+	 */
 	public boolean getEstEchec()
 	{
 		return this.estEchec;
 	}
-	
+	/**
+	 * Methode permet de set l'état d'echec d'un Roi.
+	 * @param Un boolean qui traduira l'état d'echec d'un Roi.
+	 */
 	public void setEstEchec(boolean b)
 	{
 		this.estEchec = b;
 	}
 	
+	/* -------------------------------------
+	 *  Méthode de classe
+	 ------------------------------------- */
+	/**
+	 * Dis si le coup est conforme au déplacement de la pièce.
+	 * @param c La case cible du Roi courant.
+	 * @return Un boolean qui traduit la possibilité du coup.
+	 */
 	public boolean deplacementOk(Case c)
 	{
     	if(     (c.getLigne() == this.getCase().getLigne() || c.getLigne() == this.getCase().getLigne() - 1 || c.getLigne() == this.getCase().getLigne() + 1)
@@ -37,13 +66,20 @@ public class Roi extends Piece
     	}
     	return false;
     }
-	
+	/**
+	 * Dis si le coup est conforme au déplacement de la pièce et prend en compte les colisions avec les autres pièces du plateau.
+	 * @param c La case cible du Roi courant.
+	 * @return Un boolean qui traduit la possibilité du coup avec prise en compte des colisions.
+	 */
 	public boolean deplacementPossible(Case c)
 	{
 		return this.deplacementOk(c);
 	}
 	
-	//Renvoie la liste des cases repondant a deplacement possible
+	/**
+	 * Fait une liste des cases d'arrivés possibles du Roi.
+	 * @return Renvoie la liste des cases repondant à déplacement possible.
+	 */
 	public ArrayList<Case> CasesPossible()
 	{
 		ArrayList<Case> CaseP = new ArrayList<Case>();
