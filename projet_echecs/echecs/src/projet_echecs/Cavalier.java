@@ -4,6 +4,11 @@ import java.util.ArrayList;
 
 public class Cavalier extends Piece {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	public Cavalier(boolean couleur) 
 	{
 		super(couleur, "C");

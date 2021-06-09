@@ -4,6 +4,10 @@ import java.util.ArrayList;
 
 public class Roi extends Piece
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private boolean estEchec;
 
 	public Roi(boolean couleur)

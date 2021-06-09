@@ -4,6 +4,11 @@ import java.util.ArrayList;
 
 public class Dame extends Piece
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	public Dame(boolean couleur)
 	{
 		super(couleur, "D");

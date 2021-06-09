@@ -4,6 +4,10 @@ import java.util.ArrayList;
 
 public class Pion extends Piece
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private boolean peutPrendre;
 
 	public Pion(boolean couleur) {

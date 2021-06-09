@@ -4,6 +4,12 @@ import java.util.ArrayList;
 
 public class Tour extends Piece {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+
 	public Tour(boolean couleur) {
 		super(couleur, "T");
 	}

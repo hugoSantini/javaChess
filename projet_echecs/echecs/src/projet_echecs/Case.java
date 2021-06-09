@@ -1,11 +1,21 @@
 package projet_echecs;
 
-public class Case {
+import java.io.Serializable;
+
+public class Case implements Serializable{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private int Ligne;
 	private int Colonne;
 	private static Case[][] Cases = new Case[8][8];
 	private boolean presence;
+	
+	public Case()
+	{
+	}
 	
 	public Case(int L, int C)
 	{

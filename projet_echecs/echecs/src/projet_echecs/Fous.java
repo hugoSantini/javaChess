@@ -5,6 +5,11 @@ import java.util.ArrayList;
 public class Fous extends Piece{
 	
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	public Fous(boolean couleur) {
 		super(couleur, "F");
 	}

@@ -11,6 +11,7 @@
 
 package projet_echecs;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -142,12 +143,10 @@ public class Partie {
 	public void lancerPartie() {
 		try{
 			this.menuLancementPartie();
-			while(!this.getPlateau().matOrPatTest()){
-				System.out.println(getPlateau().testMat());
-				System.out.println(getPlateau().deplacementRoiPossible(getPlateau().getRoi(true)).toString());
-				System.out.println(plateau.estEchec(colorToPlay()));
-				System.out.println(getPlateau().getRoi(colorToPlay()).getEstEchec());
-				this.tourDeJeu();
+			this.affichage();
+			while(!this.getPlateau().matOrPatTest())
+			{
+				this.tourJeu();
 				getPlateau().estEchec(colorToPlay());
 			}
 		}
@@ -173,7 +172,8 @@ public class Partie {
 		}
 	}
 	
-	private Case saisieCase() {
+	private Case saisieCase() 
+	{
 		try {
 			String saisie = scan.nextLine();
 			while(! ( saisie.equals("save") || Partie.testCaseDansPlateau(saisie))){
@@ -191,122 +191,104 @@ public class Partie {
 			
 		}
 		catch(Exception e) {
-			System.err.println("Ya une erreur dans le saisieCase :");
+			System.err.println("il y a une erreur dans le saisieCase :");
 			System.err.println(e);
 		} 
 		return null;
 	}
-	private void affichage(){
+	
+	private void affichage()
+	{
 		System.out.println(this.getPlateau().toString());
 	}
-	private char charColor() {
-		if (turnNumber%2 == 0) {
+	
+	private char charColor() 
+	{
+		if (turnNumber%2 == 0) 
+		{
 			return 'B';
 		}
-		else {
+		else 
+		{
 			return 'N';
 		}
 	}
 	
-	private void tourDeJeu() throws IOException{
-		System.out.println("Tour du joueur : " + this.charColor() );
-		System.out.println("Saisir la case de la pièce à jouer : \n " );
-		if (this.getPlateau().estEchec(colorToPlay())) {
-			this.affichage();
-			System.out.println("Vous êtes en echec !" );
-			Case c1 = this.saisieCase();
-			while(getPlateau().getPiece(c1) == null) {
-				System.err.println("Il n'y a pas de pièce sur la case saisi.");
-				System.out.println("Saisir la case de la pièce à jouer : ");
-				c1 = this.saisieCase();
-				if (getPlateau().getPiece(c1) != null) {
-					if ((getPlateau().getPiece(c1).getCouleur() != this.colorToPlay())) {
-						System.err.println("Il n'y a pas de pièce sur la case saisi ou celle-ci est de la mauvaise couleur.");
-						System.out.println("Saisir la case de la pièce à jouer : ");
-						c1 = this.saisieCase();
-					}
-					else if ( ! (getPlateau().deplacementPiecePossible(getPlateau().getPiece(c1)).size() > 0)) {
-						System.err.println("La piece choisi n'a pas de déplacement possible.");
-						System.out.println("Saisir la case de la pièce à jouer : ");
-						c1 = this.saisieCase();
-					}
-					else if (getPlateau().clouage(getPlateau().getPiece(c1))) {
-						System.err.println("La piece choisi est cloué !");
-						System.out.println("Saisir la case de la pièce à jouer : ");
-						c1 = this.saisieCase();
-					}
-					else {
-							if (getPlateau().getPiece(c1) instanceof Roi) {
-								if (! getPlateau().deplacementRoiPossible((Roi) getPlateau().getPiece(c1)).isEmpty()) {
-									System.out.println("Ou voulez-vous déplacer votre roi :");
-									System.out.println("Cases possible : " + casePossibleTraduitRoi(getPlateau().getPiece(c1)));
-									Case c2 = this.saisieCase();
-									while (getPlateau().deplacementRoiPossible((Roi) getPlateau().getPiece(c1)).contains(c2)){
-										System.err.println("La case de destination est invalide :");
-										System.out.println("Ou voulez-vous déplacer votre roi : "+ casePossibleTraduitRoi(getPlateau().getPiece(c1)));
-										c2 = this.saisieCase();
-									}
-									getPlateau().deplacement(getPlateau().getPiece(c1), c2);
-								}
-							
-						}
-							else if(! getPlateau().bloqueEchec(getPlateau().getPiece(c1)).isEmpty()) {
-								System.out.println("La piece selectioné peut bloquer l'echec en :" + casePossibleTraduitBloqueEchec(getPlateau().getPiece(c1)));
-								Case c2 = this.saisieCase();
-								while (getPlateau().bloqueEchec(getPlateau().getPiece(c1)).contains(c2)){
-									System.err.println("La case de destination est invalide :");
-									System.out.println("Votre coup ne bloque pas l'echec : " + casePossibleTraduitBloqueEchec(getPlateau().getPiece(c1)));
-									c2 = this.saisieCase();
+	private boolean tourValide(Case c1, Case c2)
+	{
+		if (this.getPlateau().getPiece(c1) != null)
+		{
+			Piece p = this.getPlateau().getPiece(c1);
+			if (p.getCouleur() == this.colorToPlay())
+			{
+				if (this.getPlateau().testDep(p, c2))
+				{
+					if (this.getPlateau().estEchec(p.getCouleur()))
+					{
+						System.out.println("vous êtes en échecs!");
+						if (p instanceof Roi)
+						{
+							if (this.getPlateau().deplacementRoiPossible((Roi) p).contains(c2))
+							{
+								return true;
 							}
-								getPlateau().deplacement(getPlateau().getPiece(c1), c2);
 						}
-
+						else
+						{
+							if (this.getPlateau().peutBloquer(p, c2))
+							{
+								System.out.println("ok");
+								return !this.getPlateau().clouage(p);
+							}
+						}
+					}
+					else
+					{
+						if (this.getPlateau().clouage(p))
+						{
+							if (this.getPlateau().testBlocageClouage(p, c2))
+							{
+								return true;
+							}	
+							else
+							{
+								return false;
+							}
+						}
+						return true;
 					}
 				}
 			}
 		}
-		else {
-			this.affichage();
-			Case c1 = this.saisieCase();
-			while(getPlateau().getPiece(c1) == null) {
-				System.err.println("Il n'y a pas de pièce sur la case saisi.");
-				System.out.println("Saisir la case de la pièce à jouer : ");
-				c1 = this.saisieCase();
-				if (getPlateau().getPiece(c1) != null) {
-					if ((getPlateau().getPiece(c1).getCouleur() != this.colorToPlay())) {
-						System.err.println("Il n'y a pas de pièce sur la case saisi ou celle-ci est de la mauvaise couleur.");
-						System.out.println("Saisir la case de la pièce à jouer : ");
-						c1 = this.saisieCase();
-					}
-					else if ( ! (getPlateau().deplacementPiecePossible(getPlateau().getPiece(c1)).size() > 0)) {
-						System.err.println("La piece choisi n'a pas de déplacement possible.");
-						System.out.println("Saisir la case de la pièce à jouer : ");
-						c1 = this.saisieCase();
-					}
-					else if (getPlateau().clouage(getPlateau().getPiece(c1))) {
-						System.err.println("La piece choisi est cloué !");
-						System.out.println("Saisir la case de la pièce à jouer : ");
-						c1 = this.saisieCase();
-					}
-				}
-			}
-			System.out.println("Saisir la case destination : " );
-			System.out.println("Cases possible : " + casePossibleTraduit(getPlateau().getPiece(c1)));
-			Case c2 = saisieCase();
-			while(!this.getPlateau().testDep(getPlateau().getPiece(c1),c2)){
-				System.err.println("La case choisi n'est pas dans les case possible : " + getPlateau().deplacementPiecePossible(getPlateau().getPiece(c1)).toString());
-				c2 = saisieCase();
-			}
-			getPlateau().deplacement(getPlateau().getPiece(c1), c2);
-			this.incrementTurnNumber();
-		}
+		return false;
 	}
 	
+	private void tourJeu() throws IOException
+	{
+		System.out.println("Tour du joueur : " + this.charColor() );
+		System.out.println("Saisir la case de la pièce à jouer : \n " );
+		Case c1 = this.saisieCase();
+		System.out.println("Saisir la case où vous voulez la déplacer : \n " );
+		Case c2 = this.saisieCase();
+		if (this.tourValide(c1, c2))
+		{
+			this.getPlateau().deplacement(this.getPlateau().getPiece(c1), c2);
+			this.affichage();
+			this.incrementTurnNumber();
+		}
+		else
+		{
+			System.err.println("Coup invalide! Veuillez recommencer.");
+		}
+		
+	}
 	
-	private void menuLancementPartie() {
+	private void menuLancementPartie() 
+	{
 		System.out.println("(Vous pourez sauvegarder votre partie en tapant 'save' à la place d'une case de départ)");
 		System.out.println("Que voulez-vous faire : \n\t 1 -> Nouvelle partie\n\t 2 -> Charger une partie");
-		try {
+		try
+		{
 			int choix = scan.nextInt();
 			scan.nextLine();
 			while (choix != 1 && choix != 2) {
@@ -321,70 +303,58 @@ public class Partie {
 			else {
 				this.loadGame();
 			}
-		} catch (ClassNotFoundException | IOException e) {
+		} 
+		catch (ClassNotFoundException | IOException e) 
+		{
 			e.printStackTrace();
 		} 
 	}
-	public void newGame () throws IOException {
+	
+	
+	private void newGame () throws IOException
+	{
 		this.plateau = new Plateau();
 	}
-	private void loadGame() throws IOException, ClassNotFoundException{
+	
+	
+	private void loadGame() throws IOException, ClassNotFoundException
+	{
 			System.out.println("Nom de la sauvegarde :");
 			String fileName = scan.nextLine();
-			FileInputStream fin = new FileInputStream("./saves/"+ fileName + ".txt");
+			FileInputStream fin = new FileInputStream("./saves/"+ fileName + ".ser");
 			ObjectInputStream ois = new ObjectInputStream(fin);
 			Plateau p =  (Plateau) ois.readObject();
 			ois.close();
 			this.setPlateau(p);
 	}
 	
-	private void saveGame()throws IOException{
-			System.out.println("Nom de la sauvegarde :");
+	private void saveGame()throws IOException
+	{
+		
+			System.out.println("Nom de la sauvegarde : ");
 			String fileName= scan.nextLine();
-			FileOutputStream fos = new FileOutputStream("./saves/"+ fileName + ".txt");
+			File file = new File("./saves/" + fileName + ".ser");
+			file.createNewFile();
+			try
+			{
+			FileOutputStream fos = new FileOutputStream(file);
 			ObjectOutputStream oos = new ObjectOutputStream(fos);
 			oos.writeObject(this.getPlateau());
 			oos.close();
 			System.exit(0);
-		}
-	private boolean colorToPlay() {
+			}
+			catch(IOException e)
+			{
+				e.printStackTrace();
+			}
+	}
+	
+	
+	private boolean colorToPlay() 
+	{
 		if (turnNumber%2 == 0)
 			return true;
 		else
 			return false;
 	}
-	public String casePossibleTraduitRoi(Piece p) {
-		ArrayList<Case> array = this.plateau.deplacementRoiPossible((Roi) p);
-		String s = "[";
-		for (int i = 0; i < array.size(); i++) {
-	          	s += String.valueOf(array.get(i).getNomColonne()) + String.valueOf(array.get(i).getNomLigne()) + ",";
-	      }
-		
-		s = s.substring(0,s.length()-1);
-		s +="]";
-		return s;
-		}
-
-	public String casePossibleTraduitBloqueEchec(Piece p) {
-		ArrayList<Case> array = this.plateau.bloqueEchec(p);
-		String s = "[";
-		for (int i = 0; i < array.size(); i++) {
-	          	s += String.valueOf(array.get(i).getNomColonne()) + String.valueOf(array.get(i).getNomLigne()) + ",";
-	      }
-		
-		s = s.substring(0,s.length()-1);
-		s +="]";
-		return s;
-		}
-	public String casePossibleTraduit(Piece p) {
-		ArrayList<Case> array = this.plateau.deplacementPiecePossible(p);
-		String s = "[";
-		for (int i = 0; i < array.size(); i++) {
-	          	s += String.valueOf(array.get(i).getNomColonne()) + String.valueOf(array.get(i).getNomLigne()) + ",";
-	      }
-		
-		s = s.substring(0,s.length()-1);
-		s +="]";
-		return s;
-		}
 }

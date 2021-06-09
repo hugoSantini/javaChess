@@ -1,19 +1,22 @@
 package projet_echecs;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Piece {
+public abstract class Piece implements Serializable{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private Case c;
 	private boolean couleur;
-	private String Nom;
 	private boolean premierCoup;
 	
 	
 	public Piece (boolean couleur, String Nom)
 	{
 		this.couleur = couleur;
-		this.Nom = Nom;
 		this.premierCoup = true;
 	}
 
@@ -47,26 +50,12 @@ public class Piece {
 		this.couleur = couleur;
 	}
 	
-	public boolean deplacementOk(Case caseA)
-	{
-		return false;
-	}
+	public abstract boolean deplacementOk(Case caseA);
+
 	
-	public boolean deplacementPossible(Case c)
-	{
-		return false;
-	}
+	public abstract boolean deplacementPossible(Case c);
 	
-	public ArrayList<Case> CasesPossible()
-	{
-		ArrayList<Case> CaseP = new ArrayList<Case>();
-		return CaseP;
-	}
-	
-	public boolean deplacer(Case caseA)
-	{
-		return true;
-	}
+	public abstract ArrayList<Case> CasesPossible();
 	
 	public String toString()
 	{

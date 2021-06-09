@@ -1,10 +1,15 @@
 package projet_echecs;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class Plateau {
+public class Plateau implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private Piece[][] plateau;
 	
 	public Plateau()
@@ -89,65 +94,126 @@ public class Plateau {
 	public boolean clouage(Piece p)
 	{
 		boolean clouage = false;
-		if (! (p instanceof Roi) )
-		{ 
-			this.setPiece(p.getCase(), null);
-			for (int j = 0; j < 8; j++)
-			{
-				for (Piece piece : this.getPlateau()[j])
+		if (!this.estEchec(p.getCouleur()))
+		{
+			if (! (p instanceof Roi) )
+			{ 
+				this.setPiece(p.getCase(), null);
+				for (int j = 0; j < 8; j++)
 				{
-					if (piece != null)
+					for (Piece piece : this.getPlateau()[j])
 					{
-						if (piece.getCouleur() != p.getCouleur())
+						if (piece != null)
 						{
-							if (piece.CasesPossible().contains(this.getRoi(p.getCouleur()).getCase()))
+							if (piece.getCouleur() != p.getCouleur())
 							{
-								this.setPiece(p.getCase(), p);
-								clouage = true;
-								System.out.println("La piece " + p + " est clouée par : " + piece);
+								if (piece.CasesPossible().contains(this.getRoi(p.getCouleur()).getCase()))
+								{
+									this.setPiece(p.getCase(), p);
+									clouage = true;
+									System.out.println("La piece " + p + " est clouée par : " + piece);
+								}
 							}
 						}
 					}
 				}
+				this.setPiece(p.getCase(), p);
 			}
-			this.setPiece(p.getCase(), p);
 		}
 		return clouage;
+	}
+	
+	public boolean testBlocageClouage(Piece p, Case c)
+	{
+		Piece pieceC = null;
+		this.setPiece(p.getCase(), null);
+		for (int j = 0; j < 8; j++)
+		{
+			for (Piece piece : this.getPlateau()[j])
+			{
+				if (piece != null  && !(pieceC instanceof Pion))
+				{
+					if (piece.getCouleur() != p.getCouleur())
+					{
+						if (piece.CasesPossible().contains(this.getRoi(p.getCouleur()).getCase()))
+						{
+							pieceC = piece;
+						}
+					}
+				}
+			}
+		}
+		this.setPiece(p.getCase(), p);
+		
+		if (pieceC != null)
+		{
+			if (c == pieceC.getCase())
+			{
+				return true;
+			}
+			else if (pieceC.CasesPossible().contains(c))
+			{
+				return true;
+			}
+		}
+		
+		return false;
 	}
 	
 	//test si roi en echec et piece qui veut être jouer pas le roi
     //test si deplacement de p permet de bloquer un échecs (true = blocage possible)
     public ArrayList<Case> bloqueEchec(Piece p)
     {
-        ArrayList<Case> peutBloquer = new ArrayList<Case>();
+        ArrayList<Case> caseBloquer = new ArrayList<Case>();
 
         if (this.getRoi(p.getCouleur()).getEstEchec() && !(p instanceof Roi)) 
         { 
-            for (Case ca : p.CasesPossible())
+            for (Case ca : this.deplacementPiecePossible(p))
             {
-                if (this.testDep(p, ca))
+            	//System.out.println("dep de " + p + "{"+p.getCase().getLigne()+","+p.getCase().getColonne()+"} en ["+ca.getLigne()+","+ca.getColonne()+"]" + this.testDep(p, ca) + " bloque : " + this.peutBloquer(p, ca));
+                if (this.peutBloquer(p, ca))
                 {
-                    this.setPiece(ca,p);
-                    for (int j = 0; j < 8; j++)
+                	caseBloquer.add(ca);
+                }
+            }
+        }
+        return caseBloquer;
+    }
+    
+    // test si le déplacement de p en c bloque un échecs
+    public boolean peutBloquer(Piece p, Case c)
+    {
+    	boolean peutBloquer = true;
+    	Piece pieceB = null;
+    	
+    	Case caseD = p.getCase();
+    	
+    	if (this.getPiece(Case.getCase(c.getLigne(), c.getColonne())) != null)
+    	{
+    		pieceB = this.getPiece(Case.getCase(c.getLigne(), c.getColonne()));
+    	}
+
+        if (this.getRoi(p.getCouleur()).getEstEchec() && !(p instanceof Roi)) 
+        { 
+        	this.setPiece(c,p);
+            for (int j = 0; j < 8; j++)
+            {
+            	for (Piece piece : this.getPlateau()[j])
+                {
+            		if (piece != null && !(piece instanceof Roi))
                     {
-                        for (Piece piece : this.getPlateau()[j])
+            			if (piece.getCouleur() != p.getCouleur())
                         {
-                            if (piece != null)
+            				if (piece.CasesPossible().contains(this.getRoi(p.getCouleur()).getCase()))
                             {
-                                if (piece.getCouleur() != p.getCouleur())
-                                {
-                                    if (piece.CasesPossible().contains(this.getRoi(p.getCouleur()).getCase()))
-                                    {
-                                        peutBloquer.add(ca);
-                                        System.out.println("Votre roi est attaqué par : " + piece);
-                                    }
-                                }
+            					peutBloquer = false;
                             }
                         }
                     }
-                    this.setPiece(ca, null);
                 }
             }
+            this.setPiece(c, pieceB);
+            this.setPiece(caseD, p);
         }
         return peutBloquer;
     }
@@ -165,7 +231,6 @@ public class Plateau {
 					{
 						if (t.CasesPossible().contains(this.getRoi(couleur).getCase()))
 						{
-							System.out.println("échecs !! (par " + t + ")");
 							this.getRoi(couleur).setEstEchec(true);
 						}
 					}
@@ -191,16 +256,20 @@ public class Plateau {
 					{
 						if (t.deplacementOk(c) && c.getColonne() != t.getCase().getColonne())
 						{
-							System.out.println(" en : " + c.getLigne() + "," + c.getColonne() + " impossible, la case est controléee par : " + t + "\n");
+							//System.out.println("Déplacement impossible, la case est controléee par : " + t + "\n");
 							protege = true;
 						}
 					}
 				}
 				else if (t != null && t != p)
 				{
-					if (t.CasesPossible().contains(c))
+					if (t.getCouleur() != p.getCouleur())
 					{
-						protege = true;
+						if (t.CasesPossible().contains(c))
+						{
+							//System.out.println("Déplacement impossible, la case est controléee par : " + t + "\n");
+							protege = true;
+						}
 					}
 				}
 			}
@@ -233,19 +302,25 @@ public class Plateau {
         {
             for (Piece t : this.getPlateau()[i])
             {
-                if (!this.bloqueEchec(t).isEmpty())
-                {
-                    bloque = true;
-                }
+            	if (t != null)
+            	{
+	                if (this.bloqueEchec(t).size() != 0)
+	                {
+	                    bloque = true;
+	                }
+	                //System.out.println(t + ":" + this.bloqueEchec(t));
+            	}
             }
         }
-
-        if (this.deplacementRoiPossible(this.getRoi(true)).isEmpty() && this.getRoi(true).getEstEchec() && !bloque)
+        
+        if (this.deplacementRoiPossible(this.getRoi(true)).isEmpty() && this.getRoi(true).getEstEchec() && bloque == false)
         {
+        	System.out.println("échecs et mat!");
             return true;
         }
-        else if (this.deplacementRoiPossible(this.getRoi(false)).isEmpty() && this.getRoi(false).getEstEchec() && !bloque)
+        else if (this.deplacementRoiPossible(this.getRoi(false)).isEmpty() && this.getRoi(false).getEstEchec() && bloque == false)
         {
+        	System.out.println("échecs et mat!");
             return true;
         }
         return false;
@@ -254,31 +329,57 @@ public class Plateau {
 	//test si un joueur est pat
 	public boolean testPat()
 	{
-		boolean estPat = true;
+		boolean estPatBlanc = true;
+		boolean estPatNoir = true;
 
-		for (int i = 0; i < 8; i++)
-		{
-			for (Piece t : this.getPlateau()[i])	
+			for (int i = 0; i < 8; i++)
 			{
-				if (t instanceof Roi)
+				for (Piece t : this.getPlateau()[i])	
 				{
-					if (!this.deplacementRoiPossible((Roi) t).isEmpty())
+					if (t != null)
 					{
-						estPat = false;
-					}
-				}
-				if (t != null) {
-					for (Case ca : t.CasesPossible())
-					{
-						if (this.testDep(t, ca))
+						if (t.getCouleur())
 						{
-							estPat = false;
+							if (t instanceof Roi)
+							{
+								if (!this.deplacementRoiPossible((Roi) t).isEmpty())
+								{
+									estPatBlanc = false;
+								}
+							}
+							else
+							{
+								if (this.deplacementPiecePossible(t).size()!=0)
+								{
+									estPatBlanc = false;
+								}
+							}
+						}
+						else
+						{
+							if (t instanceof Roi)
+							{
+								if (!this.deplacementRoiPossible((Roi) t).isEmpty())
+								{
+									estPatNoir = false;
+								}
+							}
+							else
+							{
+								if (this.deplacementPiecePossible(t).size()!=0)
+								{
+									estPatNoir = false;
+								}
+							}
 						}
 					}
 				}
 			}
+		if ((estPatBlanc || estPatNoir) && ((!this.estEchec(true) && !this.estEchec(false))))
+		{
+			System.out.print("Pat!");
 		}
-		return estPat;
+		return (estPatBlanc || estPatNoir) && (!this.estEchec(true) && !this.estEchec(false));
 	}
 	
 	// effectue un deplacement 
@@ -310,6 +411,7 @@ public class Plateau {
 		}
 		return false;
 	}
+	
 	//Renvoie une liste des cases possible pour la pièce passée en paramètre (tenant compte des pièces adverses)
     public ArrayList<Case> deplacementPiecePossible(Piece p)
     {
@@ -323,6 +425,7 @@ public class Plateau {
         }
         return casep;
     }
+    
 	public void promotion(Piece p, Case c)
 	{
 		if (p instanceof Pion)
@@ -372,7 +475,7 @@ public class Plateau {
 				}
 				else
 				{
-					str+= "00 ";
+					str+= "-- ";
 				}
 			}
 			str+="\n";
@@ -439,7 +542,20 @@ public class Plateau {
 			setPiece(c[7][5], new Fous(true));
 			setPiece(c[7][6], new Cavalier(true));
 			setPiece(c[7][7], new Tour(true));
+			
+		
+		// set up pat
+		/*
+		setPiece(c[0][4], new Roi(false));
+		setPiece(c[3][3], new Dame(false));
+		setPiece(c[5][5], new Tour(false));
+		setPiece(c[0][0], new Tour(false));
+		
+		setPiece(c[6][4], new Roi(true));
+		*/
 	}
+	
+	
 	public boolean matOrPatTest() {
 		return this.testPat() || this.testMat();
 	}
